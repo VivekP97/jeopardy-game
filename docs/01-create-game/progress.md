@@ -50,15 +50,15 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 4 — Play UI
 
-- [ ] Setup form (3–5 players, names)
-- [ ] Jeopardy board grid
-- [ ] Clue panel (question, reveal, judge)
-- [ ] Buzz panel
-- [ ] Scoreboard
-- [ ] Game complete / winner screen
-- [ ] Play UI built with Material UI components
-- [ ] Full manual playthrough works
-- [ ] `npm run build` passes
+- [x] Setup form (3–5 players, names)
+- [x] Jeopardy board grid
+- [x] Clue panel (question, reveal, judge)
+- [x] Buzz panel
+- [x] Scoreboard
+- [x] Game complete / winner screen
+- [x] Play UI built with Material UI components
+- [x] Full manual playthrough works
+- [x] `npm run build` passes
 
 ---
 
@@ -95,6 +95,10 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 ## Milestone notes
 
 _Add dated notes here as phases complete._
+
+### 2026-06-11 — Phase 4 complete
+- Play UI components: `GameSetupForm`, `JeopardyBoard`, `CluePanel`, `BuzzPanel`, `Scoreboard`, `GameComplete`.
+- `PlayGameView` orchestrates setup → play → complete; wires engine transitions (select clue, open buzz, buzz, judge).
 
 ### 2026-06-11 — Phase 3 complete
 - Pure game engine in `src/game/engine.ts` (createGame, selectClue, openBuzz, buzz, judgeAnswer).
