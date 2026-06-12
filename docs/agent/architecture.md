@@ -5,31 +5,33 @@ Module layout and separation of concerns for the Jeopardy game.
 ## Target directory structure
 
 ```
-jeopardy-game/
-  public/data/
-    board.json              # Default 6×5 board content
-    saved-game.json         # Save slot ({ "savedGame": null } when empty)
-  src/
-    types/
-      game.ts               # Player, Clue, Category, Board, GameState, BuzzState
-    data/
-      loadBoard.ts          # Fetch + validate board.json
-      saveBoard.ts          # PUT board via /api/board
-      savedGame.ts          # Save/load/validate saved-game.json
-    game/
-      engine.ts             # createGame, selectClue, openBuzz, buzz, judgeAnswer
-      board.ts              # remaining clues, isGameComplete, getWinnerIndices
-    components/
-      GameSetupForm.tsx
-      JeopardyBoard.tsx
-      CluePanel.tsx
-      BuzzPanel.tsx
-      Scoreboard.tsx
-      GameComplete.tsx
-      ManageGameView.tsx
-    App.tsx                 # Sidebar nav + view orchestration
-    App.css
-  vite.config.ts            # Dev-only /api/board and /api/saved-game middleware
+public/data/
+  board.json              # Default 6×5 board content
+  saved-game.json         # Save slot ({ "savedGame": null } when empty)
+src/
+  types/
+    game.ts               # Player, Clue, Category, Board, GameState, BuzzState
+  data/
+    loadBoard.ts          # Fetch + validate board.json
+    saveBoard.ts          # PUT board via /api/board
+    savedGame.ts          # Save/load/validate saved-game.json
+  game/
+    engine.ts             # createGame, selectClue, openBuzz, buzz, judgeAnswer
+    board.ts              # remaining clues, isGameComplete, getWinnerIndices
+  components/
+    GameSetupForm.tsx
+    JeopardyBoard.tsx
+    CluePanel.tsx
+    BuzzPanel.tsx
+    Scoreboard.tsx
+    GameComplete.tsx
+    ManageGameView.tsx
+  App.tsx                 # Sidebar nav + view orchestration
+  App.css
+vite.config.ts            # Dev-only /api/board and /api/saved-game middleware
+docs/
+  01-create-game/         # Spec, implementation plan, progress
+  agent/                  # Agent guidance supplements
 ```
 
 Create files as phases require them — do not scaffold the full tree in Phase 1.
@@ -85,7 +87,7 @@ Save ──► gameStateToSavedPayload ──► PUT /api/saved-game
 
 Production builds serve static files only — **writes require the dev server**.
 
-Mirror `wheel-of-fortune-game/vite.config.ts`:
+Implement in `vite.config.ts` as dev-only Connect middleware:
 
 | Endpoint | File |
 |----------|------|

@@ -54,7 +54,7 @@ Everything else follows familiar Jeopardy flow: category grid, dollar values, pi
 - Automated speech / speech recognition
 - Timer / 5-second limit (optional future enhancement)
 - Sound effects
-- Server or database; static deploy without write API (document limitation like Wheel of Fortune README)
+- Server or database; static deploy without write API (document dev-server persistence limitation in README)
 - Point penalties on incorrect answers (scores only go up)
 
 ## JSON: game board
@@ -101,7 +101,7 @@ Validation rules:
 
 **Path:** `public/data/saved-game.json`
 
-Wrapper shape (matches Wheel of Fortune pattern):
+Wrapper shape:
 
 ```json
 {
@@ -165,7 +165,7 @@ Optional later: **Sounds** (not in v1).
 2. `npm run dev`
 3. Open the Vite URL (usually `http://localhost:5173`).
 
-Persistence writes require the dev-server API in `vite.config.ts` (copy pattern from `wheel-of-fortune-game`).
+Persistence writes require the dev-server API in `vite.config.ts` (see [`docs/agent/architecture.md`](../agent/architecture.md)).
 
 ## Acceptance criteria (full app)
 

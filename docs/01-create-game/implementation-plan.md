@@ -5,37 +5,36 @@
 - Vite + React + TypeScript
 - Pure game engine in `src/game/engine.ts` (no React imports)
 - JSON under `public/data/`
-- Dev-only file API in `vite.config.ts` (mirror `wheel-of-fortune-game`)
+- Dev-only file API in `vite.config.ts` (see [`docs/agent/architecture.md`](../agent/architecture.md))
 
 ## Target module layout
 
 ```
-jeopardy-game/
-  public/data/
-    board.json              # Default 6×5 board
-    saved-game.json         # Save slot
-  src/
-    types/
-      game.ts               # Player, Clue, Category, Board, GameState, BuzzState
-    data/
-      loadBoard.ts          # Fetch + validate board.json
-      saveBoard.ts          # PUT board via /api/board
-      savedGame.ts          # Save/load/validate saved-game.json
-    game/
-      engine.ts             # createGame, selectClue, openBuzz, buzz, judgeAnswer, etc.
-      board.ts              # Selectors: remaining clues, isGameComplete, etc.
-    components/
-      GameSetupForm.tsx     # Player count + names
-      JeopardyBoard.tsx     # 6×5 grid
-      CluePanel.tsx         # Question, answer reveal, judge buttons
-      BuzzPanel.tsx         # Per-player buzz buttons
-      Scoreboard.tsx        # Player scores + current selector highlight
-      GameComplete.tsx      # Final standings
-      ManageGameView.tsx    # Board editor
-    App.tsx                 # Navigation + orchestration
-    App.css
-  vite.config.ts            # /api/board, /api/saved-game middleware
-  docs/01-create-game/      # This planning folder
+public/data/
+  board.json              # Default 6×5 board
+  saved-game.json         # Save slot
+src/
+  types/
+    game.ts               # Player, Clue, Category, Board, GameState, BuzzState
+  data/
+    loadBoard.ts          # Fetch + validate board.json
+    saveBoard.ts          # PUT board via /api/board
+    savedGame.ts          # Save/load/validate saved-game.json
+  game/
+    engine.ts             # createGame, selectClue, openBuzz, buzz, judgeAnswer, etc.
+    board.ts              # Selectors: remaining clues, isGameComplete, etc.
+  components/
+    GameSetupForm.tsx     # Player count + names
+    JeopardyBoard.tsx     # 6×5 grid
+    CluePanel.tsx         # Question, answer reveal, judge buttons
+    BuzzPanel.tsx         # Per-player buzz buttons
+    Scoreboard.tsx        # Player scores + current selector highlight
+    GameComplete.tsx      # Final standings
+    ManageGameView.tsx    # Board editor
+  App.tsx                 # Navigation + orchestration
+  App.css
+vite.config.ts            # /api/board, /api/saved-game middleware
+docs/01-create-game/      # This planning folder
 ```
 
 ## Phases
@@ -50,7 +49,7 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 **Tasks**
 
-1. Confirm `jeopardy-game` Vite React-TS project runs (`npm run dev`).
+1. Confirm the Vite React-TS project runs (`npm run dev`).
 2. Add base layout in `App.tsx`:
    - Sidebar: **Play Game**, **Manage Game**
    - Placeholder content for each view
@@ -68,7 +67,7 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 **Tasks**
 
-1. Add `vite.config.ts` plugin with reusable JSON middleware (copy from `wheel-of-fortune-game`):
+1. Add `vite.config.ts` plugin with reusable JSON middleware (see [`docs/agent/architecture.md`](../agent/architecture.md)):
    - `GET/PUT /api/board` → `public/data/board.json`
    - `GET/PUT /api/saved-game` → `public/data/saved-game.json`
 2. Define types in `src/types/game.ts`.
@@ -143,7 +142,7 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 **Tasks**
 
-1. `ManageGameView.tsx` modeled on `wheel-of-fortune-game/src/components/ManageGameView.tsx`:
+1. `ManageGameView.tsx` — board editor with:
    - Edit category titles
    - Edit each clue: question, answer (values fixed by row or read-only 200–1000)
    - Add/remove not required if board size is fixed at 6×5; focus on edit-in-place
@@ -164,7 +163,7 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 **Tasks**
 
 1. `src/data/savedGame.ts`:
-   - `SavedGamePayload` type, parse/validate (mirror WOF `savedGame.ts` style)
+   - `SavedGamePayload` type, parse/validate (see `spec.md` saved-game schema)
    - `gameStateToSavedPayload` / `savedPayloadToGameState`
    - `loadSavedGameFile` / `saveSavedGameFile`
 2. Engine: `resumeGameFromSave(payload)` if needed for reconstruction.
@@ -188,7 +187,7 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 1. Responsive layout for board (scroll or scale on narrow screens).
 2. Empty/error states: no board file, incomplete board, save errors.
-3. Project `README.md` at repo root (quick start, how to play, data files table — mirror WOF README structure).
+3. Project `README.md` at repo root (quick start, how to play, data files table).
 4. Update [progress.md](./progress.md) — all items checked.
 5. Final `npm run build` and lint.
 
@@ -216,12 +215,12 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 - Automated unit tests for `engine.ts`
 - Category list file (`categories.json`) for Manage Game dropdowns
 
-## Reference files in wheel-of-fortune-game
+## In-repo references
 
-| Concern | Reference path |
+| Concern | Where to look |
 |---------|----------------|
-| Vite JSON API | `vite.config.ts` |
-| Save/load | `src/data/savedGame.ts` |
-| Manage UI | `src/components/ManageGameView.tsx` |
-| App navigation | `src/App.tsx` (first ~200 lines) |
-| Docs style | `docs/spec.md`, `docs/progress.md`, `README.md` |
+| Module layout | This file — Target module layout |
+| Dev JSON API | [`docs/agent/architecture.md`](../agent/architecture.md) |
+| Game rules & JSON schemas | [`spec.md`](./spec.md) |
+| Agent workflow | [`AGENTS.md`](../../AGENTS.md), [`docs/agent/workflow.md`](../agent/workflow.md) |
+| Progress checklist | [`progress.md`](./progress.md) |

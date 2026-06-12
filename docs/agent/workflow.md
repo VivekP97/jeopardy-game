@@ -29,18 +29,9 @@ If the user asks for something outside the phased plan (e.g., "add a timer"):
 - If out of scope, confirm with the user or note it as a future enhancement.
 - If in scope but not in the current phase, prefer completing pending phases first unless the user overrides.
 
-## Reference project usage
+## Architecture patterns
 
-The sibling **`wheel-of-fortune-game`** project is the architectural template:
-
-| Copy from WOF | Do not copy |
-|---------------|-------------|
-| `vite.config.ts` JSON middleware | Wheel gameplay logic |
-| `src/data/savedGame.ts` patterns | Puzzle/letter mechanics |
-| `ManageGameView.tsx` editor structure | WOF-specific UI copy |
-| `App.tsx` sidebar navigation pattern | Sound settings |
-
-If the reference project is unavailable on disk, implement from the descriptions in `implementation-plan.md` and `spec.md`.
+When implementing persistence, navigation, or save/load, follow the conventions in [`architecture.md`](architecture.md) and [`../01-create-game/spec.md`](../01-create-game/spec.md). All paths are relative to this repository root.
 
 ## Progress tracking
 

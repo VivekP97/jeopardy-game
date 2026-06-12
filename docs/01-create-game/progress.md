@@ -10,7 +10,7 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 0 — Manual scaffold (user)
 
-- [ ] User created Vite React-TS project in `jeopardy-game/`
+- [ ] Vite React-TS scaffold present in this repository
 - [ ] `npm install` completed
 - [ ] `npm run dev` runs successfully
 

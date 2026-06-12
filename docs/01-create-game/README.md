@@ -2,9 +2,9 @@
 
 This folder contains the phased plan for building a browser-based Jeopardy-style party game. The plan is designed for an AI agent to implement **one phase at a time**, validating each phase before moving on.
 
-## Reference project
+## Reference patterns
 
-Use the sibling **`wheel-of-fortune-game`** project as the architectural reference for:
+This app follows the same general architecture as other local party-game web apps built with React + Vite:
 
 - React + TypeScript + Vite layout
 - `public/data/` JSON storage
@@ -13,7 +13,7 @@ Use the sibling **`wheel-of-fortune-game`** project as the architectural referen
 - Save & continue via `public/data/saved-game.json`
 - Pure game logic in `src/game/` separate from UI components
 
-Do **not** copy Wheel of Fortune gameplay code. Reuse patterns and file structure only.
+See [`docs/agent/architecture.md`](../agent/architecture.md) for how these pieces fit together in **this repository**. Do not copy gameplay from other projects — reuse file-structure and persistence patterns only.
 
 ## Documents in this folder
 
@@ -32,43 +32,46 @@ Do **not** copy Wheel of Fortune gameplay code. Reuse patterns and file structur
 5. Mark the phase complete in **progress.md** with date and brief notes.
 6. Stop and wait for the user to request the next phase (unless the user asked for multiple phases).
 
-## Project location
+## Repository layout
 
-Create the app in a **`jeopardy-game`** folder alongside `wheel-of-fortune-game`:
+All paths in these docs are relative to **this repository root**:
 
 ```
-Wheel of Fortune/
-  wheel-of-fortune-game/
-  jeopardy-game/          ← new app lives here
-    docs/01-create-game/    ← this planning folder
-    public/data/
-    src/
-    ...
+docs/
+  01-create-game/       # This planning folder
+  agent/                # Agent guidance (AGENTS.md supplements)
+public/
+  data/                 # Persisted JSON (Phase 2+)
+src/                    # Application source
+vite.config.ts
+package.json
+AGENTS.md
 ```
 
-## Phase 0 — Manual scaffold (user runs this)
+Run `npm install`, `npm run dev`, and `npm run build` from the repository root.
 
-`npm create vite@latest` is **interactive** and often fails when run by agents. **The user should run these commands once** before Phase 1:
+## Phase 0 — Scaffold (complete)
+
+The Vite React-TS scaffold should already exist in this repo. Before Phase 1, confirm:
 
 ```bash
-cd "c:\Users\Vivek\Documents\Coding Projects\Wheel of Fortune"
-npm create vite@latest jeopardy-game -- --template react-ts
-cd jeopardy-game
 npm install
 npm run dev
 ```
 
-Confirm the dev server starts (usually `http://localhost:5173`), then tell the agent to begin **Phase 1**.
+The dev server should start (usually `http://localhost:5173`). If setting up a fresh clone, run the commands above from the repository root — do not scaffold into a parent folder or a nested subfolder.
 
-### Non-interactive alternatives
+### If the repo has no source yet
 
-If the command above prompts anyway, use:
+Only if this repository is empty, scaffold in place from the root:
 
 ```bash
 npm create vite@latest . -- --template react-ts
+npm install
+npm run dev
 ```
 
-…from an empty `jeopardy-game` directory the user creates manually.
+`npm create vite@latest` is interactive and may fail when run by agents; prefer a human running it once if needed.
 
 ## Quick validation commands (all phases)
 

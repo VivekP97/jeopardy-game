@@ -11,7 +11,6 @@ Browser-based **Jeopardy-style party game** for 3–5 players. A human host read
 | **Stack** | React 19, TypeScript 6, Vite 8 |
 | **Package manager** | npm |
 | **Persistence** | JSON files under `public/data/` via dev-server API (Phase 2+) |
-| **Reference project** | Sibling `wheel-of-fortune-game` — reuse **patterns only**, not gameplay code |
 
 Full game rules, JSON schemas, and acceptance criteria: [`docs/01-create-game/spec.md`](docs/01-create-game/spec.md).
 
@@ -61,7 +60,7 @@ public/data/
 - **Game logic** lives in `src/game/engine.ts` as pure, immutable functions.
 - **UI components** call engine functions; they do not embed scoring or buzz rules.
 - **Data layer** validates JSON on load/save; never trust raw fetch results.
-- **Dev file API** in `vite.config.ts` mirrors `wheel-of-fortune-game` (`GET/PUT /api/board`, `/api/saved-game`).
+- **Dev file API** in `vite.config.ts` — `GET/PUT /api/board`, `GET/PUT /api/saved-game` (see [`docs/agent/architecture.md`](docs/agent/architecture.md)).
 
 Details: [`docs/agent/architecture.md`](docs/agent/architecture.md).
 
@@ -100,7 +99,7 @@ Details: [`docs/agent/game-domain.md`](docs/agent/game-domain.md).
 - Split phase work into logical commits as you go (not one giant commit at the end).
 - Follow the phased plan and update `progress.md` when a phase completes.
 - Run `npm run build` before finishing a task.
-- Copy Vite JSON middleware and save/load patterns from `wheel-of-fortune-game`.
+- Implement the dev-server JSON API and save/load patterns described in [`docs/agent/architecture.md`](docs/agent/architecture.md).
 - Handle invalid JSON and corrupt saves with friendly UI errors.
 
 **Do not**
