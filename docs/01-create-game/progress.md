@@ -73,11 +73,11 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 6 — Save and resume
 
-- [ ] `savedGame.ts` parse/save/load
-- [ ] Save & menu during play
-- [ ] Continue saved game on menu
-- [ ] Resume restores in-progress clue/buzz state
-- [ ] `npm run build` passes
+- [x] `savedGame.ts` parse/save/load
+- [x] Save & menu during play
+- [x] Continue saved game on menu
+- [x] Resume restores in-progress clue/buzz state
+- [x] `npm run build` passes
 
 ---
 
@@ -95,6 +95,10 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 ## Milestone notes
 
 _Add dated notes here as phases complete._
+
+### 2026-06-11 — Phase 6 complete
+- `savedGame.ts`: validate, load/save via `/api/saved-game`, `gameStateToSavedPayload` / `savedPayloadToGameState`.
+- Play UI: **Save & menu** during play; setup menu **Continue saved game** (with `savedAt`) and **Abandon save**; `resumeGameFromSave` restores full in-progress state.
 
 ### 2026-06-11 — Phase 5 complete
 - `ManageGameView` board editor: category titles, clue questions/answers, fixed row values.

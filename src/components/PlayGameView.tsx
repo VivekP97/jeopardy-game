@@ -1,14 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { loadBoard } from '../data/loadBoard'
+import {
+  gameStateToSavedPayload,
+  loadSavedGameFile,
+  saveSavedGameFile,
+} from '../data/savedGame'
 import {
   buzz,
   createGame,
   judgeAnswer,
   openBuzz,
+  resumeGameFromSave,
   selectClue,
 } from '../game/engine'
 import type { Board, Clue, GameConfig, GameState } from '../types/game'
@@ -40,6 +47,24 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
   const [board, setBoard] = useState<Board | null>(null)
   const [error, setError] = useState('')
   const [gameState, setGameState] = useState<GameState | null>(null)
+  const [savedGameAt, setSavedGameAt] = useState<string | null>(null)
+  const [savedGameError, setSavedGameError] = useState('')
+  const [saveActionError, setSaveActionError] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isContinuing, setIsContinuing] = useState(false)
+  const [isAbandoning, setIsAbandoning] = useState(false)
+
+  const refreshSavedGameMeta = useCallback(async () => {
+    const result = await loadSavedGameFile()
+    if (result.ok) {
+      setSavedGameAt(result.savedGame?.savedAt ?? null)
+      setSavedGameError('')
+      return
+    }
+
+    setSavedGameAt(null)
+    setSavedGameError(result.error)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -68,15 +93,86 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
     }
   }, [boardRevision])
 
+  useEffect(() => {
+    if (status !== 'ready') {
+      return
+    }
+
+    void refreshSavedGameMeta()
+  }, [status, boardRevision, gameState, refreshSavedGameMeta])
+
   const handleStartGame = (config: GameConfig) => {
     if (!board) {
       return
     }
+    setSaveActionError('')
     setGameState(createGame(config, board))
   }
 
   const handleNewGame = () => {
+    setSaveActionError('')
     setGameState(null)
+  }
+
+  const handleContinueSavedGame = async () => {
+    setIsContinuing(true)
+    setSaveActionError('')
+
+    const result = await loadSavedGameFile()
+    if (!result.ok) {
+      setSavedGameError(result.error)
+      setIsContinuing(false)
+      return
+    }
+
+    if (!result.savedGame) {
+      setSavedGameError('No saved game found.')
+      setSavedGameAt(null)
+      setIsContinuing(false)
+      return
+    }
+
+    setGameState(resumeGameFromSave(result.savedGame))
+    setSavedGameError('')
+    setIsContinuing(false)
+  }
+
+  const handleAbandonSave = async () => {
+    setIsAbandoning(true)
+    setSaveActionError('')
+
+    const result = await saveSavedGameFile(null)
+    if (!result.ok) {
+      setSaveActionError(result.error)
+      setIsAbandoning(false)
+      return
+    }
+
+    setSavedGameAt(null)
+    setSavedGameError('')
+    setIsAbandoning(false)
+  }
+
+  const handleSaveAndMenu = async () => {
+    if (!gameState) {
+      return
+    }
+
+    setIsSaving(true)
+    setSaveActionError('')
+
+    const payload = gameStateToSavedPayload(gameState)
+    const result = await saveSavedGameFile(payload)
+
+    if (!result.ok) {
+      setSaveActionError(result.error)
+      setIsSaving(false)
+      return
+    }
+
+    setSavedGameAt(payload.savedAt)
+    setGameState(null)
+    setIsSaving(false)
   }
 
   const handleSelectClue = (clueId: string) => {
@@ -116,7 +212,17 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
   }
 
   if (!gameState) {
-    return <GameSetupForm onStart={handleStartGame} />
+    return (
+      <GameSetupForm
+        onStart={handleStartGame}
+        savedGameAt={savedGameAt}
+        savedGameError={savedGameError}
+        onContinueSavedGame={savedGameAt ? handleContinueSavedGame : undefined}
+        onAbandonSave={savedGameAt ? handleAbandonSave : undefined}
+        isContinuing={isContinuing}
+        isAbandoning={isAbandoning}
+      />
+    )
   }
 
   if (gameState.phase === 'complete') {
@@ -130,12 +236,37 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
 
   const buzzedPlayerName =
     gameState.buzzState.buzzedPlayerIndex !== null
-      ? gameState.config.players[gameState.buzzState.buzzedPlayerIndex]?.name ?? null
+      ? gameState.config.players[gameState.buzzState.buzzedPlayerIndex]?.name ??
+        null
       : null
 
   return (
     <Stack spacing={3}>
-      <Scoreboard state={gameState} />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 2,
+          alignItems: { sm: 'center' },
+          justifyContent: 'space-between',
+        }}
+      >
+        <Scoreboard state={gameState} />
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => void handleSaveAndMenu()}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving…' : 'Save & menu'}
+        </Button>
+      </Box>
+
+      {saveActionError ? (
+        <Alert severity="error" onClose={() => setSaveActionError('')}>
+          {saveActionError}
+        </Alert>
+      ) : null}
 
       {activeClue ? (
         <CluePanel

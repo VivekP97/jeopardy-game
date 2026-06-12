@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
@@ -16,13 +17,35 @@ const MAX_PLAYERS = 5
 
 export type GameSetupFormProps = {
   onStart: (config: GameConfig) => void
+  savedGameAt?: string | null
+  savedGameError?: string
+  onContinueSavedGame?: () => void
+  onAbandonSave?: () => void
+  isContinuing?: boolean
+  isAbandoning?: boolean
+}
+
+function formatSavedAt(iso: string): string {
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) {
+    return iso
+  }
+  return date.toLocaleString()
 }
 
 function defaultNames(count: number): string[] {
   return Array.from({ length: count }, (_, index) => `Player ${index + 1}`)
 }
 
-export default function GameSetupForm({ onStart }: GameSetupFormProps) {
+export default function GameSetupForm({
+  onStart,
+  savedGameAt = null,
+  savedGameError = '',
+  onContinueSavedGame,
+  onAbandonSave,
+  isContinuing = false,
+  isAbandoning = false,
+}: GameSetupFormProps) {
   const [playerCount, setPlayerCount] = useState(MIN_PLAYERS)
   const [names, setNames] = useState(defaultNames(MIN_PLAYERS))
   const [error, setError] = useState('')
@@ -69,7 +92,43 @@ export default function GameSetupForm({ onStart }: GameSetupFormProps) {
   }
 
   return (
-    <Paper sx={{ p: 4, maxWidth: 480 }}>
+    <Stack spacing={3} sx={{ maxWidth: 480 }}>
+      {savedGameAt && onContinueSavedGame ? (
+        <Paper sx={{ p: 3 }}>
+          <Typography variant="h5" color="secondary" gutterBottom>
+            Continue Saved Game
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>
+            Saved {formatSavedAt(savedGameAt)}
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onContinueSavedGame}
+              disabled={isContinuing || isAbandoning}
+            >
+              {isContinuing ? 'Loading…' : 'Continue saved game'}
+            </Button>
+            {onAbandonSave ? (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={onAbandonSave}
+                disabled={isContinuing || isAbandoning}
+              >
+                {isAbandoning ? 'Clearing…' : 'Abandon save'}
+              </Button>
+            ) : null}
+          </Stack>
+        </Paper>
+      ) : null}
+
+      {savedGameError ? (
+        <Alert severity="warning">{savedGameError}</Alert>
+      ) : null}
+
+      <Paper sx={{ p: 4 }}>
       <Typography variant="h4" color="secondary" gutterBottom>
         New Game
       </Typography>
@@ -120,6 +179,7 @@ export default function GameSetupForm({ onStart }: GameSetupFormProps) {
           </Button>
         </Box>
       </Stack>
-    </Paper>
+      </Paper>
+    </Stack>
   )
 }
