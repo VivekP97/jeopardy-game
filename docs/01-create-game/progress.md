@@ -96,6 +96,11 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 _Add dated notes here as phases complete._
 
+### 2026-06-12 — Automated unit tests
+- Vitest + React Testing Library + MSW; `npm test`, `npm run test:run`, `npm run test:coverage`.
+- Engine, board helpers, data validators, and core UI flows covered; coverage thresholds on `src/game/**` and `src/data/**`.
+- Plan: [`docs/02-add-test-coverage/plan.md`](../../02-add-test-coverage/plan.md).
+
 ### 2026-06-12 — Phase 7 complete
 - Responsive board: horizontal scroll and compact cells on narrow viewports; mobile nav drawer with menu toggle.
 - Theme polish: shared shape, button/alert/chip overrides, loading and error states via `ViewStateMessage`.
@@ -129,5 +134,5 @@ _Add dated notes here as phases complete._
 
 - [ ] Daily Double
 - [ ] Sound effects
-- [ ] Automated unit tests
+- [x] Automated unit tests
 - [ ] Answer timer

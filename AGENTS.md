@@ -24,6 +24,9 @@ npm run dev          # Dev server (http://localhost:5173)
 npm run build        # Typecheck + production bundle — run after every phase
 npm run lint         # ESLint
 npm run preview      # Preview production build
+npm test             # Vitest (watch mode)
+npm run test:run     # Vitest single run (CI)
+npm run test:coverage # Vitest with coverage thresholds
 ```
 
 **Do not run** `npm create vite@latest` — the scaffold already exists (Phase 0 is manual).
@@ -105,13 +108,14 @@ Details: [`docs/agent/game-domain.md`](docs/agent/game-domain.md).
 - Split phase work into logical commits as you go (not one giant commit at the end).
 - Follow the phased plan and update `progress.md` when a phase completes.
 - Run `npm run build` before finishing a task.
+- Run `npm run test:run` when changing game logic, data validation, or tested UI flows.
 - Implement the dev-server JSON API and save/load patterns described in [`docs/agent/architecture.md`](docs/agent/architecture.md).
 - Handle invalid JSON and corrupt saves with friendly UI errors.
 
 **Do not**
 
 - Work or commit directly on **`master`** — always use a feature branch.
-- Skip phases or implement future features (Daily Double, sounds, timers, tests) unless explicitly requested.
+- Skip phases or implement future features (Daily Double, sounds, answer timer) unless explicitly requested.
 - Add backend/database dependencies — v1 is static + dev-server file API only.
 - Import React into `src/game/` or put game rules in components.
 - Push to remote unless the user explicitly asks.
@@ -122,6 +126,7 @@ Details: [`docs/agent/game-domain.md`](docs/agent/game-domain.md).
 
 Before marking a phase complete:
 
+- [ ] `npm run test:run` passes
 - [ ] `npm run build` passes with no TypeScript errors
 - [ ] `npm run lint` passes (required from Phase 7 onward; run when ESLint is configured)
 - [ ] Manual smoke test steps from the implementation plan pass

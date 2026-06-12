@@ -44,7 +44,7 @@ Create files as phases require them — do not scaffold the full tree in Phase 1
 - **No React imports.** No `fetch`, no DOM, no side effects.
 - Functions take `GameState` (or config) and return **new immutable state**.
 - All scoring, buzz, steal, and selector rules live here.
-- Must be unit-testable in isolation (formal tests deferred to v2).
+- Must be unit-testable in isolation — see [`../02-add-test-coverage/plan.md`](../02-add-test-coverage/plan.md).
 
 ```typescript
 // ✅ Engine function signature pattern

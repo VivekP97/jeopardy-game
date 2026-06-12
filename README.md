@@ -14,9 +14,12 @@ npm run dev
 Open [http://localhost:5173](http://localhost:5173). Use the sidebar to switch between **Play Game** and **Manage Game**.
 
 ```bash
-npm run build   # Typecheck + production bundle
-npm run lint    # ESLint
-npm run preview # Preview production build
+npm run build      # Typecheck + production bundle
+npm run lint       # ESLint
+npm run preview    # Preview production build
+npm test           # Vitest watch mode
+npm run test:run   # Single test run (CI)
+npm run test:coverage # Coverage report + thresholds
 ```
 
 **Note:** Board and save-file writes use a dev-server API (`/api/board`, `/api/saved-game`). Editing and saving work when running `npm run dev`. A static production build can load data but cannot persist changes without a separate backend.

@@ -76,7 +76,18 @@ import { GameState } from '../types/game'; // type-only import required
 - **Material UI** — required for all UI (`@mui/material`, `@emotion/react`, `@emotion/styled`). Optional: `@mui/icons-material`.
 - Do not add routing or state management libraries unless explicitly requested.
 - Do not add another CSS framework or component library alongside MUI.
-- Do not add test frameworks until explicitly requested (deferred in v1).
+
+## Testing
+
+- **Vitest** + **React Testing Library** for unit and component tests; **MSW** mocks `fetch` for data-layer tests.
+- Colocate tests as `*.test.ts` / `*.test.tsx` next to source (e.g. `src/game/engine.test.ts`).
+- Shared helpers live under `src/test/` (`renderWithTheme`, fixtures, MSW handlers).
+- Prefer role/label queries (`getByRole`, `getByLabelText`) over test IDs.
+- Game rules belong in `src/game/` tests; UI tests assert wiring and disabled states, not scoring logic.
+- Run `npm run test:run` before finishing work that touches engine, data validation, or tested components.
+- Coverage thresholds (enforced on `npm run test:coverage`): `src/game/**` ≥ 95%, `src/data/**` ≥ 90%.
+
+Full testing plan: [`docs/02-add-test-coverage/plan.md`](../02-add-test-coverage/plan.md).
 
 ## ESLint
 
