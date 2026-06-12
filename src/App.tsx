@@ -1,121 +1,109 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Paper from '@mui/material/Paper'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import EditIcon from '@mui/icons-material/Edit'
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
+
+const DRAWER_WIDTH = 240
+
+type AppView = 'play' | 'manage'
+
+function PlayGamePlaceholder() {
+  return (
+    <Paper sx={{ p: 4, textAlign: 'center' }}>
+      <Typography variant="h4" color="secondary" gutterBottom>
+        Play Game
+      </Typography>
+      <Typography color="text.secondary">
+        Game setup and board will appear here.
+      </Typography>
+    </Paper>
+  )
+}
+
+function ManageGamePlaceholder() {
+  return (
+    <Paper sx={{ p: 4, textAlign: 'center' }}>
+      <Typography variant="h4" color="secondary" gutterBottom>
+        Manage Game
+      </Typography>
+      <Typography color="text.secondary">
+        Board editor will appear here.
+      </Typography>
+    </Paper>
+  )
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [view, setView] = useState<AppView>('play')
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: DRAWER_WIDTH,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: DRAWER_WIDTH,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        <Toolbar>
+          <Typography variant="h6" noWrap component="div" color="secondary">
+            Jeopardy
+          </Typography>
+        </Toolbar>
+        <List component="nav" aria-label="Main navigation">
+          <ListItemButton
+            selected={view === 'play'}
+            onClick={() => setView('play')}
+          >
+            <ListItemIcon
+              sx={{
+                color: view === 'play' ? 'secondary.main' : 'inherit',
+              }}
+            >
+              <SportsEsportsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Play Game" />
+          </ListItemButton>
+          <ListItemButton
+            selected={view === 'manage'}
+            onClick={() => setView('manage')}
+          >
+            <ListItemIcon
+              sx={{
+                color: view === 'manage' ? 'secondary.main' : 'inherit',
+              }}
+            >
+              <EditIcon />
+            </ListItemIcon>
+            <ListItemText primary="Manage Game" />
+          </ListItemButton>
+        </List>
+      </Drawer>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          bgcolor: 'background.default',
+          minHeight: '100vh',
+        }}
+      >
+        {view === 'play' ? <PlayGamePlaceholder /> : <ManageGamePlaceholder />}
+      </Box>
+    </Box>
   )
 }
 

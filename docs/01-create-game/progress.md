@@ -1,6 +1,6 @@
 # Implementation Progress
 
-Last updated: _not started_
+Last updated: 2026-06-11
 
 ## How to use
 
@@ -10,19 +10,19 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 0 — Manual scaffold (user)
 
-- [ ] Vite React-TS scaffold present in this repository
-- [ ] `npm install` completed
-- [ ] `npm run dev` runs successfully
+- [x] Vite React-TS scaffold present in this repository
+- [x] `npm install` completed
+- [x] `npm run dev` runs successfully
 
 ---
 
 ## Phase 1 — Scaffold and app shell
 
-- [ ] Material UI installed (`@mui/material`, Emotion peers)
-- [ ] `src/theme.ts` with Jeopardy-inspired palette; `ThemeProvider` + `CssBaseline` in `main.tsx`
-- [ ] Sidebar navigation: Play Game, Manage Game (MUI layout)
-- [ ] Placeholder views switch correctly
-- [ ] `npm run build` passes
+- [x] Material UI installed (`@mui/material`, Emotion peers)
+- [x] `src/theme.ts` with Jeopardy-inspired palette; `ThemeProvider` + `CssBaseline` in `main.tsx`
+- [x] Sidebar navigation: Play Game, Manage Game (MUI layout)
+- [x] Placeholder views switch correctly
+- [x] `npm run build` passes
 
 ---
 
@@ -96,10 +96,9 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 _Add dated notes here as phases complete._
 
-<!-- Example:
 ### 2026-06-11 — Phase 1 complete
-- App shell with sidebar; build passes.
--->
+- Material UI installed with Jeopardy-themed palette in `src/theme.ts`.
+- App shell with permanent sidebar (Play Game / Manage Game) and placeholder views; build passes.
 
 ## Deferred / future
 
