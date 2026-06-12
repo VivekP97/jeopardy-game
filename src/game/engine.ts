@@ -4,6 +4,7 @@ import type {
   Clue,
   GameConfig,
   GameState,
+  SavedGamePayload,
 } from '../types/game'
 import { getAllClueIds, isGameComplete } from './board'
 
@@ -42,6 +43,22 @@ function withResolvedPhase(state: GameState): GameState {
     return state
   }
   return { ...state, phase }
+}
+
+export function resumeGameFromSave(payload: SavedGamePayload): GameState {
+  return {
+    config: payload.config,
+    board: payload.board,
+    scores: [...payload.scores],
+    currentSelectorIndex: payload.currentSelectorIndex,
+    phase: payload.phase,
+    clueStates: { ...payload.clueStates },
+    activeClueId: payload.activeClueId,
+    buzzState: {
+      ...payload.buzzState,
+      attemptedPlayerIndices: [...payload.buzzState.attemptedPlayerIndices],
+    },
+  }
 }
 
 export function createGame(config: GameConfig, board: Board): GameState {
