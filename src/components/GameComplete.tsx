@@ -37,7 +37,7 @@ export default function GameComplete({ state, onNewGame }: GameCompleteProps) {
       : `Winner: ${winnerNames[0] ?? 'Unknown'}`
 
   return (
-    <Paper sx={{ p: 4, maxWidth: 560 }}>
+    <Paper elevation={4} sx={{ p: { xs: 3, sm: 4 }, maxWidth: 560 }}>
       <Typography variant="h4" color="secondary" gutterBottom>
         Game Complete
       </Typography>

@@ -18,7 +18,7 @@ export default function Scoreboard({ state }: ScoreboardProps) {
   const buzzedPlayerIndex = buzzState.buzzedPlayerIndex
 
   return (
-    <Paper sx={{ p: 2, mb: 3 }}>
+    <Paper sx={{ p: 2, flex: 1 }}>
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={2}

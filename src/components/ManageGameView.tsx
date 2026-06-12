@@ -20,6 +20,7 @@ import {
 } from '../data/loadBoard'
 import { saveBoard } from '../data/saveBoard'
 import type { Board } from '../types/game'
+import ViewStateMessage from './ViewStateMessage'
 
 export type ManageGameViewProps = {
   onBoardSaved?: () => void
@@ -158,22 +159,40 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
 
   if (status === 'loading') {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 6 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          p: 6,
+        }}
+      >
         <CircularProgress color="secondary" aria-label="Loading board editor" />
+        <Typography color="text.secondary">Loading board editor…</Typography>
       </Box>
     )
   }
 
   if (status === 'error') {
     return (
-      <Alert severity="error" sx={{ maxWidth: 640 }}>
-        {loadError}
-      </Alert>
+      <ViewStateMessage
+        title="Could not load board editor"
+        message={loadError}
+        hint="Ensure public/data/board.json is valid JSON with 6 categories and 5 clues per category. Restart the dev server if the file was added recently."
+      />
     )
   }
 
   if (!draft) {
-    return null
+    return (
+      <ViewStateMessage
+        title="Board editor unavailable"
+        message="No board data is loaded."
+        severity="warning"
+        hint="Restore public/data/board.json or copy the sample from the repository."
+      />
+    )
   }
 
   return (

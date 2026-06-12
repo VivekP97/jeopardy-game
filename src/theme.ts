@@ -39,9 +39,15 @@ export const theme = createTheme({
       contrastText: '#ffd700',
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     h4: {
+      fontWeight: 600,
+    },
+    h5: {
       fontWeight: 600,
     },
     h6: {
@@ -49,6 +55,13 @@ export const theme = createTheme({
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          scrollbarColor: 'rgba(255, 215, 0, 0.4) rgba(0, 0, 0, 0.2)',
+        },
+      },
+    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
@@ -76,6 +89,33 @@ export const theme = createTheme({
         root: {
           backgroundImage: 'none',
         },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 600,
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          alignItems: 'center',
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          fontWeight: 600,
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined',
       },
     },
   },

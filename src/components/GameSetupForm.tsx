@@ -167,11 +167,7 @@ export default function GameSetupForm({
           />
         ))}
 
-        {error ? (
-          <Typography color="error" variant="body2">
-            {error}
-          </Typography>
-        ) : null}
+        {error ? <Alert severity="error">{error}</Alert> : null}
 
         <Box>
           <Button variant="contained" color="secondary" size="large" onClick={handleStart}>
