@@ -31,7 +31,11 @@ function findClue(board: Board, clueId: string): Clue | undefined {
   return undefined
 }
 
-export default function PlayGameView() {
+export type PlayGameViewProps = {
+  boardRevision?: number
+}
+
+export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
   const [status, setStatus] = useState<LoadStatus>('loading')
   const [board, setBoard] = useState<Board | null>(null)
   const [error, setError] = useState('')
@@ -40,6 +44,8 @@ export default function PlayGameView() {
   useEffect(() => {
     let cancelled = false
 
+    setStatus('loading')
+
     void loadBoard().then((result) => {
       if (cancelled) {
         return
@@ -47,10 +53,12 @@ export default function PlayGameView() {
 
       if (result.ok) {
         setBoard(result.board)
+        setError('')
         setStatus('ready')
         return
       }
 
+      setBoard(null)
       setError(result.error)
       setStatus('error')
     })
@@ -58,7 +66,7 @@ export default function PlayGameView() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [boardRevision])
 
   const handleStartGame = (config: GameConfig) => {
     if (!board) {

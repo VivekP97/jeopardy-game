@@ -5,32 +5,20 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import Paper from '@mui/material/Paper'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import EditIcon from '@mui/icons-material/Edit'
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
+import ManageGameView from './components/ManageGameView'
 import PlayGameView from './components/PlayGameView'
 
 const DRAWER_WIDTH = 240
 
 type AppView = 'play' | 'manage'
 
-function ManageGamePlaceholder() {
-  return (
-    <Paper sx={{ p: 4, textAlign: 'center' }}>
-      <Typography variant="h4" color="secondary" gutterBottom>
-        Manage Game
-      </Typography>
-      <Typography color="text.secondary">
-        Board editor will appear here.
-      </Typography>
-    </Paper>
-  )
-}
-
 function App() {
   const [view, setView] = useState<AppView>('play')
+  const [boardRevision, setBoardRevision] = useState(0)
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -89,7 +77,11 @@ function App() {
           minHeight: '100vh',
         }}
       >
-        {view === 'play' ? <PlayGameView /> : <ManageGamePlaceholder />}
+        {view === 'play' ? (
+          <PlayGameView boardRevision={boardRevision} />
+        ) : (
+          <ManageGameView onBoardSaved={() => setBoardRevision((n) => n + 1)} />
+        )}
       </Box>
     </Box>
   )

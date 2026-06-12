@@ -64,10 +64,10 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 5 — Manage Game
 
-- [ ] Board editor UI
-- [ ] Validation on save
-- [ ] Persist to `public/data/board.json`
-- [ ] `npm run build` passes
+- [x] Board editor UI
+- [x] Validation on save
+- [x] Persist to `public/data/board.json`
+- [x] `npm run build` passes
 
 ---
 
@@ -95,6 +95,10 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 ## Milestone notes
 
 _Add dated notes here as phases complete._
+
+### 2026-06-11 — Phase 5 complete
+- `ManageGameView` board editor: category titles, clue questions/answers, fixed row values.
+- `saveBoard.ts` validates and persists via `PUT /api/board`; Play view reloads board on save.
 
 ### 2026-06-11 — Phase 4 complete
 - Play UI components: `GameSetupForm`, `JeopardyBoard`, `CluePanel`, `BuzzPanel`, `Scoreboard`, `GameComplete`.
