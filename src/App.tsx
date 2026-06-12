@@ -10,23 +10,11 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import EditIcon from '@mui/icons-material/Edit'
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
+import PlayGameView from './components/PlayGameView'
 
 const DRAWER_WIDTH = 240
 
 type AppView = 'play' | 'manage'
-
-function PlayGamePlaceholder() {
-  return (
-    <Paper sx={{ p: 4, textAlign: 'center' }}>
-      <Typography variant="h4" color="secondary" gutterBottom>
-        Play Game
-      </Typography>
-      <Typography color="text.secondary">
-        Game setup and board will appear here.
-      </Typography>
-    </Paper>
-  )
-}
 
 function ManageGamePlaceholder() {
   return (
@@ -101,7 +89,7 @@ function App() {
           minHeight: '100vh',
         }}
       >
-        {view === 'play' ? <PlayGamePlaceholder /> : <ManageGamePlaceholder />}
+        {view === 'play' ? <PlayGameView /> : <ManageGamePlaceholder />}
       </Box>
     </Box>
   )

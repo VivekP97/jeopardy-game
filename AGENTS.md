@@ -43,6 +43,12 @@ This project is built **one phase at a time**. Before writing code:
 
 See [`docs/agent/workflow.md`](docs/agent/workflow.md) for detailed workflow rules.
 
+## Git and commits
+
+- **Never commit on `master`.** Before writing code, create a feature branch (e.g. `phase-2-data-layer`). If you are on `master`, switch to or create a branch first.
+- **Commit on feature branches without asking.** Split work into reasonable chunks as you go; user permission is not required for feature-branch commits.
+- **Do not push or merge to `master`** unless the user explicitly asks.
+
 ## Architecture (non-negotiable)
 
 ```

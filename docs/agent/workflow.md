@@ -60,6 +60,7 @@ git checkout -b phase-1-app-shell
 
 ### Commits
 
+- **Never commit on `master`.** All commits belong on a feature branch.
 - **Commits on feature branches do not require user permission.** Commit as you make progress.
 - **Split work into reasonable chunks** — e.g. data layer, then engine, then UI wiring — rather than one large commit at phase end. You decide the split; each commit should represent a coherent unit of work.
 - **Commit messages** should clearly explain *what changed and why*, in plain language. Aim for one or two sentences; avoid walls of text and avoid bare messages like "fix" or "updates".

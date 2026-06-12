@@ -28,13 +28,13 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 2 — Data layer and dev file API
 
-- [ ] `vite.config.ts` JSON API for `/api/board` and `/api/saved-game`
-- [ ] Types in `src/types/game.ts`
-- [ ] `loadBoard.ts` with validation
-- [ ] Seed `public/data/board.json` (6×5 sample)
-- [ ] Seed `public/data/saved-game.json`
-- [ ] Play view loads board
-- [ ] `npm run build` passes
+- [x] `vite.config.ts` JSON API for `/api/board` and `/api/saved-game`
+- [x] Types in `src/types/game.ts`
+- [x] `loadBoard.ts` with validation
+- [x] Seed `public/data/board.json` (6×5 sample)
+- [x] Seed `public/data/saved-game.json`
+- [x] Play view loads board
+- [x] `npm run build` passes
 
 ---
 
@@ -95,6 +95,10 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 ## Milestone notes
 
 _Add dated notes here as phases complete._
+
+### 2026-06-11 — Phase 2 complete
+- Dev-server JSON API for board and saved-game files; typed validation in `loadBoard.ts`.
+- Seeded 6×5 sample board; Play Game view loads and displays categories or a friendly error.
 
 ### 2026-06-11 — Phase 1 complete
 - Material UI installed with Jeopardy-themed palette in `src/theme.ts`.

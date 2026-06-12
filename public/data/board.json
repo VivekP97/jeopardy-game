@@ -1,0 +1,220 @@
+{
+  "categories": [
+    {
+      "id": "cat-1",
+      "title": "Science",
+      "clues": [
+        {
+          "id": "cat-1-200",
+          "value": 200,
+          "question": "This force keeps planets in orbit around the Sun.",
+          "answer": "Gravity"
+        },
+        {
+          "id": "cat-1-400",
+          "value": 400,
+          "question": "H2O is the chemical formula for this common substance.",
+          "answer": "Water"
+        },
+        {
+          "id": "cat-1-600",
+          "value": 600,
+          "question": "This organ pumps blood through the human body.",
+          "answer": "The heart"
+        },
+        {
+          "id": "cat-1-800",
+          "value": 800,
+          "question": "Photosynthesis converts sunlight into energy in these green organisms.",
+          "answer": "Plants"
+        },
+        {
+          "id": "cat-1-1000",
+          "value": 1000,
+          "question": "Einstein's theory of relativity is often summarized by this equation: E = mc squared.",
+          "answer": "Mass-energy equivalence"
+        }
+      ]
+    },
+    {
+      "id": "cat-2",
+      "title": "History",
+      "clues": [
+        {
+          "id": "cat-2-200",
+          "value": 200,
+          "question": "This 1969 NASA mission first landed humans on the Moon.",
+          "answer": "Apollo 11"
+        },
+        {
+          "id": "cat-2-400",
+          "value": 400,
+          "question": "This wall divided East and West Berlin from 1961 to 1989.",
+          "answer": "The Berlin Wall"
+        },
+        {
+          "id": "cat-2-600",
+          "value": 600,
+          "question": "This ancient Egyptian queen was the last active ruler of the Ptolemaic Kingdom.",
+          "answer": "Cleopatra"
+        },
+        {
+          "id": "cat-2-800",
+          "value": 800,
+          "question": "In 1492, this explorer sailed across the Atlantic under Spanish patronage.",
+          "answer": "Christopher Columbus"
+        },
+        {
+          "id": "cat-2-1000",
+          "value": 1000,
+          "question": "This 1215 document limited the power of the English king and is a foundation of constitutional law.",
+          "answer": "Magna Carta"
+        }
+      ]
+    },
+    {
+      "id": "cat-3",
+      "title": "Geography",
+      "clues": [
+        {
+          "id": "cat-3-200",
+          "value": 200,
+          "question": "This is the capital city of France.",
+          "answer": "Paris"
+        },
+        {
+          "id": "cat-3-400",
+          "value": 400,
+          "question": "The Nile is often cited as the longest river in this continent.",
+          "answer": "Africa"
+        },
+        {
+          "id": "cat-3-600",
+          "value": 600,
+          "question": "This mountain range runs along the western edge of South America.",
+          "answer": "The Andes"
+        },
+        {
+          "id": "cat-3-800",
+          "value": 800,
+          "question": "Canberra is the capital of this country known for the Great Barrier Reef.",
+          "answer": "Australia"
+        },
+        {
+          "id": "cat-3-1000",
+          "value": 1000,
+          "question": "This landlocked country in South America is named after independence leader Simón Bolívar.",
+          "answer": "Bolivia"
+        }
+      ]
+    },
+    {
+      "id": "cat-4",
+      "title": "Pop Culture",
+      "clues": [
+        {
+          "id": "cat-4-200",
+          "value": 200,
+          "question": "This streaming service is known for the series Stranger Things.",
+          "answer": "Netflix"
+        },
+        {
+          "id": "cat-4-400",
+          "value": 400,
+          "question": "Taylor Swift re-recorded her albums under this label name.",
+          "answer": "Taylor's Version"
+        },
+        {
+          "id": "cat-4-600",
+          "value": 600,
+          "question": "In The Matrix, Neo is offered a red pill or this other color pill.",
+          "answer": "Blue"
+        },
+        {
+          "id": "cat-4-800",
+          "value": 800,
+          "question": "This 2023 film about physicist J. Robert Oppenheimer won Best Picture at the Oscars.",
+          "answer": "Oppenheimer"
+        },
+        {
+          "id": "cat-4-1000",
+          "value": 1000,
+          "question": "This K-pop group includes members RM, Jin, and Jungkook.",
+          "answer": "BTS"
+        }
+      ]
+    },
+    {
+      "id": "cat-5",
+      "title": "Literature",
+      "clues": [
+        {
+          "id": "cat-5-200",
+          "value": 200,
+          "question": "This boy wizard attends Hogwarts School of Witchcraft and Wizardry.",
+          "answer": "Harry Potter"
+        },
+        {
+          "id": "cat-5-400",
+          "value": 400,
+          "question": "Shakespeare's tragedy about a Danish prince is titled this.",
+          "answer": "Hamlet"
+        },
+        {
+          "id": "cat-5-600",
+          "value": 600,
+          "question": "In Orwell's 1984, the omnipresent leader is known by this name.",
+          "answer": "Big Brother"
+        },
+        {
+          "id": "cat-5-800",
+          "value": 800,
+          "question": "This author created the detective Hercule Poirot.",
+          "answer": "Agatha Christie"
+        },
+        {
+          "id": "cat-5-1000",
+          "value": 1000,
+          "question": "This epic poem by Homer tells of Odysseus's journey home after the Trojan War.",
+          "answer": "The Odyssey"
+        }
+      ]
+    },
+    {
+      "id": "cat-6",
+      "title": "Sports",
+      "clues": [
+        {
+          "id": "cat-6-200",
+          "value": 200,
+          "question": "In basketball, a shot from behind the arc is worth this many points.",
+          "answer": "Three"
+        },
+        {
+          "id": "cat-6-400",
+          "value": 400,
+          "question": "This country hosts Wimbledon, the oldest tennis tournament in the world.",
+          "answer": "England (or the United Kingdom)"
+        },
+        {
+          "id": "cat-6-600",
+          "value": 600,
+          "question": "The FIFA World Cup is the premier tournament in this sport.",
+          "answer": "Soccer (football)"
+        },
+        {
+          "id": "cat-6-800",
+          "value": 800,
+          "question": "This American athlete won four gold medals at the 1936 Berlin Olympics.",
+          "answer": "Jesse Owens"
+        },
+        {
+          "id": "cat-6-1000",
+          "value": 1000,
+          "question": "In baseball, this number of strikes results in an out.",
+          "answer": "Three"
+        }
+      ]
+    }
+  ]
+}
