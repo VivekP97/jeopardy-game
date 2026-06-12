@@ -7,6 +7,7 @@ This folder contains the phased plan for building a browser-based Jeopardy-style
 This app follows the same general architecture as other local party-game web apps built with React + Vite:
 
 - React + TypeScript + Vite layout
+- **Material UI** for components, layout, and theming
 - `public/data/` JSON storage
 - Dev-server file API in `vite.config.ts` (GET/PUT middleware for JSON files)
 - Left-sidebar navigation (**Play Game**, **Manage Game**)

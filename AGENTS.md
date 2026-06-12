@@ -8,7 +8,7 @@ Browser-based **Jeopardy-style party game** for 3–5 players. A human host read
 
 | | |
 |---|---|
-| **Stack** | React 19, TypeScript 6, Vite 8 |
+| **Stack** | React 19, TypeScript 6, Vite 8, Material UI (MUI) |
 | **Package manager** | npm |
 | **Persistence** | JSON files under `public/data/` via dev-server API (Phase 2+) |
 
@@ -71,7 +71,7 @@ Details: [`docs/agent/architecture.md`](docs/agent/architecture.md).
 - Use `type` imports where required (`verbatimModuleSyntax` is enabled).
 - Prefer named exports for utilities; default export for page-level components is fine.
 - Match existing file naming: `PascalCase.tsx` for components, `camelCase.ts` for modules.
-- Keep CSS in `App.css` or colocated imports; Jeopardy blue/gold palette encouraged.
+- Build UI with **Material UI** — use MUI components and a themed Jeopardy palette (`src/theme.ts`); avoid raw HTML styling.
 - Minimize scope — implement what the current phase requires, nothing ahead.
 
 Full conventions: [`docs/agent/coding-standards.md`](docs/agent/coding-standards.md).
@@ -127,6 +127,6 @@ Before marking a phase complete:
 |------|----------|
 | [`docs/agent/workflow.md`](docs/agent/workflow.md) | Phased development, progress tracking, when to stop |
 | [`docs/agent/architecture.md`](docs/agent/architecture.md) | Module layout, engine/UI boundary, data flow |
-| [`docs/agent/coding-standards.md`](docs/agent/coding-standards.md) | TypeScript, React, CSS, and file conventions |
+| [`docs/agent/coding-standards.md`](docs/agent/coding-standards.md) | TypeScript, React, Material UI, and file conventions |
 | [`docs/agent/game-domain.md`](docs/agent/game-domain.md) | Gameplay rules, state machine, JSON schemas |
 | [`docs/01-create-game/`](docs/01-create-game/) | Spec, implementation plan, progress checklist |

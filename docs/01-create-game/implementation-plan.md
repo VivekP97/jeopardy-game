@@ -3,6 +3,7 @@
 ## Stack
 
 - Vite + React + TypeScript
+- **Material UI (MUI)** for UI components and theming (`@mui/material`, `@emotion/react`, `@emotion/styled`)
 - Pure game engine in `src/game/engine.ts` (no React imports)
 - JSON under `public/data/`
 - Dev-only file API in `vite.config.ts` (see [`docs/agent/architecture.md`](../agent/architecture.md))
@@ -31,8 +32,9 @@ src/
     Scoreboard.tsx        # Player scores + current selector highlight
     GameComplete.tsx      # Final standings
     ManageGameView.tsx    # Board editor
+  theme.ts                # MUI createTheme — Jeopardy palette
   App.tsx                 # Navigation + orchestration
-  App.css
+  main.tsx                # ThemeProvider + CssBaseline
 vite.config.ts            # /api/board, /api/saved-game middleware
 docs/01-create-game/      # This planning folder
 ```
@@ -50,16 +52,23 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 **Tasks**
 
 1. Confirm the Vite React-TS project runs (`npm run dev`).
-2. Add base layout in `App.tsx`:
+2. Install Material UI and Emotion:
+   ```bash
+   npm install @mui/material @emotion/react @emotion/styled
+   ```
+   Optional: `@mui/icons-material` for nav icons.
+3. Add `src/theme.ts` with `createTheme` — Jeopardy-inspired colors (dark blue, gold, high contrast).
+4. Wrap the app in `ThemeProvider` and `CssBaseline` in `main.tsx`.
+5. Add base layout in `App.tsx` using MUI (e.g. `Drawer` or `List` sidebar, `Box` main area):
    - Sidebar: **Play Game**, **Manage Game**
    - Placeholder content for each view
-3. Add minimal `App.css` (Jeopardy-like blue/gold palette optional but encouraged).
-4. Copy planning docs into `docs/01-create-game/` if not already present.
+6. Copy planning docs into `docs/01-create-game/` if not already present.
 
 **Validation**
 
 - `npm run build`
 - Sidebar switches views without errors
+- App uses MUI components and themed styling (not unstyled template defaults)
 
 ---
 
@@ -118,10 +127,12 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 **Tasks**
 
-1. `GameSetupForm.tsx` — player count 3–5, dynamic name fields, Start Game.
-2. `JeopardyBoard.tsx` — 6 columns, 5 rows; hide/disable answered cells; highlight selector's pick phase.
-3. `CluePanel.tsx` — show question; **Reveal answer**; **Correct** / **Incorrect** (enabled only when someone has buzzed).
-4. `BuzzPanel.tsx` — one button per player; disabled when not buzzing, already buzzed, or already attempted this clue. Show **Steal!** state when `buzzState.isSteal` is true.
+Build all play UI with **Material UI** components, consistent with the app theme from Phase 1.
+
+1. `GameSetupForm.tsx` — player count 3–5, dynamic name fields (`TextField`, `Select` or toggle), Start Game (`Button`).
+2. `JeopardyBoard.tsx` — 6×5 grid (`Grid` / `Box`); hide/disable answered cells; highlight selector's pick phase.
+3. `CluePanel.tsx` — show question (`Paper`, `Typography`); **Reveal answer**; **Correct** / **Incorrect** (enabled only when someone has buzzed).
+4. `BuzzPanel.tsx` — one large `Button` per player; disabled when not buzzing, already buzzed, or already attempted this clue. Show **Steal!** state when `buzzState.isSteal` is true.
 5. `Scoreboard.tsx` — names, scores, indicator for current selector and who buzzed.
 6. Wire in `App.tsx`:
    - Setup → `createGame` → playing view
@@ -142,7 +153,7 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 **Tasks**
 
-1. `ManageGameView.tsx` — board editor with:
+1. `ManageGameView.tsx` — board editor with MUI form controls (`TextField`, `Table` or `Grid`, `Button`, validation `Alert`s):
    - Edit category titles
    - Edit each clue: question, answer (values fixed by row or read-only 200–1000)
    - Add/remove not required if board size is fixed at 6×5; focus on edit-in-place
@@ -185,8 +196,8 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 
 **Tasks**
 
-1. Responsive layout for board (scroll or scale on narrow screens).
-2. Empty/error states: no board file, incomplete board, save errors.
+1. Responsive layout for board using MUI breakpoints (`useMediaQuery`, `Grid`, spacing) — scroll or scale on narrow screens.
+2. Empty/error states with MUI `Alert` / `Typography`: no board file, incomplete board, save errors.
 3. Project `README.md` at repo root (quick start, how to play, data files table).
 4. Update [progress.md](./progress.md) — all items checked.
 5. Final `npm run build` and lint.
@@ -222,5 +233,6 @@ Each phase should end with `npm run build` passing (where applicable) and manual
 | Module layout | This file — Target module layout |
 | Dev JSON API | [`docs/agent/architecture.md`](../agent/architecture.md) |
 | Game rules & JSON schemas | [`spec.md`](./spec.md) |
+| UI / MUI styling | [`docs/agent/coding-standards.md`](../agent/coding-standards.md) — Styling section |
 | Agent workflow | [`AGENTS.md`](../../AGENTS.md), [`docs/agent/workflow.md`](../agent/workflow.md) |
 | Progress checklist | [`progress.md`](./progress.md) |

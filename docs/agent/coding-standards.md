@@ -30,13 +30,13 @@ import { GameState } from '../types/game'; // type-only import required
 - **Immutability** — when updating game state, always use engine return values; never mutate state in place.
 - **Keys** — use stable IDs (`clue.id`, `player.id`) for list keys, not array indices.
 - **Event handlers** — name as `handleX` / `onX` consistently; pass indices or IDs, not DOM events, to engine calls.
-- **Accessibility** — buttons for all actions; `type="button"` on non-submit buttons; meaningful labels on buzz buttons (player name).
+- **Accessibility** — use MUI components (built-in ARIA where applicable); meaningful labels on buzz buttons (player name).
 
 ```tsx
-// ✅ Component calls parent handler; engine runs upstream
-<button type="button" onClick={() => onBuzz(playerIndex)} disabled={!canBuzz}>
+// ✅ MUI button calls parent handler; engine runs upstream
+<Button variant="contained" onClick={() => onBuzz(playerIndex)} disabled={!canBuzz}>
   Buzz — {player.name}
-</button>
+</Button>
 ```
 
 ## File and naming conventions
@@ -46,14 +46,23 @@ import { GameState } from '../types/game'; // type-only import required
 | Components | `PascalCase.tsx` | `JeopardyBoard.tsx` |
 | Utilities / data / game | `camelCase.ts` | `loadBoard.ts`, `engine.ts` |
 | Types module | `game.ts` in `types/` | `src/types/game.ts` |
-| CSS | `App.css` + component classes | BEM-like or semantic class names |
+| Theme | `theme.ts` at `src/` | `src/theme.ts` |
 
-## Styling
+## Styling (Material UI)
 
-- Global layout and theme in `App.css`.
-- Jeopardy aesthetic: dark blue background, gold accents, high-contrast board cells.
-- Responsive board from Phase 7 — scroll or scale on narrow viewports.
-- Avoid inline styles except for dynamic values (e.g., grid position).
+- **Use MUI for all UI** — layout (`Box`, `Stack`, `Grid`, `Drawer`), inputs (`TextField`, `Select`), actions (`Button`, `IconButton`), surfaces (`Paper`, `Card`), feedback (`Alert`, `Snackbar`), typography (`Typography`).
+- **Central theme** — define colors, typography, and component overrides in `src/theme.ts` via `createTheme`. Jeopardy aesthetic: dark blue background, gold accents, high-contrast board cells.
+- **Prefer `sx` and theme tokens** over custom CSS files. Use the theme palette (e.g. `primary`, `secondary`, custom keys) instead of hard-coded hex values in components.
+- **CssBaseline** — include in `main.tsx` for consistent MUI baseline styles.
+- **Responsive layout** — use MUI breakpoints and `useMediaQuery` (Phase 7); board should remain usable on narrow viewports.
+- **Custom CSS** — only when MUI theming is insufficient; do not add another CSS framework.
+
+```tsx
+// ✅ Theme-aware styling
+<Box sx={{ bgcolor: 'primary.dark', p: 2, borderRadius: 1 }}>
+  <Typography variant="h5" color="secondary.main">{category.title}</Typography>
+</Box>
+```
 
 ## Error handling
 
@@ -64,8 +73,9 @@ import { GameState } from '../types/game'; // type-only import required
 
 ## Dependencies
 
-- Minimize new packages — v1 uses React + Vite only.
-- Do not add routing, state management libraries, or CSS frameworks unless the user requests them.
+- **Material UI** — required for all UI (`@mui/material`, `@emotion/react`, `@emotion/styled`). Optional: `@mui/icons-material`.
+- Do not add routing or state management libraries unless explicitly requested.
+- Do not add another CSS framework or component library alongside MUI.
 - Do not add test frameworks until explicitly requested (deferred in v1).
 
 ## ESLint

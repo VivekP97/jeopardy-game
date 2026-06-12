@@ -19,7 +19,7 @@ Everything else follows familiar Jeopardy flow: category grid, dollar values, pi
 
 ## Core requirements
 
-- **Stack:** React + Vite + TypeScript, runnable locally.
+- **Stack:** React + Vite + TypeScript + **Material UI (MUI)**, runnable locally.
 - **Players:** 3–5, each with a display name; configured on a setup form before play.
 - **Board:** One round — **6 categories × 5 clues** (30 cells total).
 - **Values:** `$200`, `$400`, `$600`, `$800`, `$1000` per row (row 1 = $200, row 5 = $1000).
@@ -150,6 +150,13 @@ When no save exists, file may be `{ "savedGame": null }` or equivalent empty sta
 - `activeClueId` — currently open clue, or `null`.
 - `buzzState` — tracks open buzz, who buzzed, who already attempted this clue, and whether the current open buzz is a **steal** (`isSteal: true` after an incorrect answer).
 
+## UI and styling
+
+- **Component library:** [Material UI (MUI)](https://mui.com/) — use MUI components for layout, forms, buttons, typography, and feedback (e.g. `Box`, `Drawer`, `Button`, `TextField`, `Grid`, `Paper`, `Typography`, `Alert`).
+- **Theme:** Customize MUI theme (e.g. `createTheme` in `src/theme.ts`) with a Jeopardy-inspired palette — dark blue backgrounds, gold accents, high-contrast board cells — so the app looks polished and cohesive, not like raw HTML.
+- **Responsive:** Use MUI layout primitives and breakpoints so the board and controls work on narrow viewports (refined in Phase 7).
+- **Scope:** Prefer MUI + theme overrides over ad-hoc CSS; keep custom CSS minimal (only where MUI `sx` or theme extensions are insufficient).
+
 ## UI views
 
 | View | Description |
@@ -177,4 +184,5 @@ Persistence writes require the dev-server API in `vite.config.ts` (see [`docs/ag
 - [ ] Winner screen with correct standings and tie handling.
 - [ ] Manage Game edits persist to `public/data/board.json`.
 - [ ] Save mid-game and resume restores scores, board state, selector, and active clue.
+- [ ] UI is styled with Material UI and a cohesive Jeopardy-inspired theme.
 - [ ] `npm run build` passes.

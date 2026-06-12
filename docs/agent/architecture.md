@@ -26,8 +26,9 @@ src/
     Scoreboard.tsx
     GameComplete.tsx
     ManageGameView.tsx
+  theme.ts                # MUI createTheme — Jeopardy palette
   App.tsx                 # Sidebar nav + view orchestration
-  App.css
+  main.tsx                # ThemeProvider + CssBaseline
 vite.config.ts            # Dev-only /api/board and /api/saved-game middleware
 docs/
   01-create-game/         # Spec, implementation plan, progress
@@ -60,9 +61,16 @@ export function judgeAnswer(state: GameState, correct: boolean): GameState {
 
 ### `src/components/` — presentation
 
+- Built with **Material UI** components; styled via theme and `sx`, not ad-hoc CSS.
 - Receive state and callbacks as props; call engine functions via parent handlers.
 - No embedded game rules (e.g., do not add `score -= value` in a component).
 - Local UI state only (form drafts, reveal-answer toggle, etc.).
+
+### `src/theme.ts` + `main.tsx` — theming
+
+- `createTheme` defines Jeopardy-inspired palette, typography, and optional component overrides.
+- `ThemeProvider` and `CssBaseline` wrap the app in `main.tsx`.
+- All views share one theme for a polished, consistent look.
 
 ### `App.tsx` — orchestration
 

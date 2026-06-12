@@ -18,7 +18,9 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 1 — Scaffold and app shell
 
-- [ ] Sidebar navigation: Play Game, Manage Game
+- [ ] Material UI installed (`@mui/material`, Emotion peers)
+- [ ] `src/theme.ts` with Jeopardy-inspired palette; `ThemeProvider` + `CssBaseline` in `main.tsx`
+- [ ] Sidebar navigation: Play Game, Manage Game (MUI layout)
 - [ ] Placeholder views switch correctly
 - [ ] `npm run build` passes
 
@@ -54,6 +56,7 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 - [ ] Buzz panel
 - [ ] Scoreboard
 - [ ] Game complete / winner screen
+- [ ] Play UI built with Material UI components
 - [ ] Full manual playthrough works
 - [ ] `npm run build` passes
 
@@ -80,7 +83,8 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 7 — Polish and docs
 
-- [ ] Responsive board layout
+- [ ] Responsive board layout (MUI breakpoints)
+- [ ] Polished, cohesive MUI theme across all views
 - [ ] Error/empty states
 - [ ] Root `README.md`
 - [ ] All progress items above checked
