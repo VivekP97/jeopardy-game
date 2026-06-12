@@ -1,6 +1,6 @@
 # Implementation Progress
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
 
 ## How to use
 
@@ -83,18 +83,23 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 7 — Polish and docs
 
-- [ ] Responsive board layout (MUI breakpoints)
-- [ ] Polished, cohesive MUI theme across all views
-- [ ] Error/empty states
-- [ ] Root `README.md`
-- [ ] All progress items above checked
-- [ ] `npm run build` and `npm run lint` pass
+- [x] Responsive board layout (MUI breakpoints)
+- [x] Polished, cohesive MUI theme across all views
+- [x] Error/empty states
+- [x] Root `README.md`
+- [x] All progress items above checked
+- [x] `npm run build` and `npm run lint` pass
 
 ---
 
 ## Milestone notes
 
 _Add dated notes here as phases complete._
+
+### 2026-06-12 — Phase 7 complete
+- Responsive board: horizontal scroll and compact cells on narrow viewports; mobile nav drawer with menu toggle.
+- Theme polish: shared shape, button/alert/chip overrides, loading and error states via `ViewStateMessage`.
+- Root `README.md`: quick start, how to play, data files table, dev-server persistence note.
 
 ### 2026-06-11 — Phase 6 complete
 - `savedGame.ts`: validate, load/save via `/api/saved-game`, `gameStateToSavedPayload` / `savedPayloadToGameState`.
