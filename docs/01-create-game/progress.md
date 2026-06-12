@@ -40,11 +40,11 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 
 ## Phase 3 — Game engine
 
-- [ ] `createGame`, `selectClue`, `openBuzz`, `buzz`, `judgeAnswer`
-- [ ] Scoring: correct adds value; incorrect enables steal (no penalties)
-- [ ] Selector / buzz / attempt rules
-- [ ] `isGameComplete` and winner helpers
-- [ ] `npm run build` passes
+- [x] `createGame`, `selectClue`, `openBuzz`, `buzz`, `judgeAnswer`
+- [x] Scoring: correct adds value; incorrect enables steal (no penalties)
+- [x] Selector / buzz / attempt rules
+- [x] `isGameComplete` and winner helpers
+- [x] `npm run build` passes
 
 ---
 
@@ -95,6 +95,10 @@ After completing a phase from [implementation-plan.md](./implementation-plan.md)
 ## Milestone notes
 
 _Add dated notes here as phases complete._
+
+### 2026-06-11 — Phase 3 complete
+- Pure game engine in `src/game/engine.ts` (createGame, selectClue, openBuzz, buzz, judgeAnswer).
+- Board helpers in `src/game/board.ts` (remaining clues, isGameComplete, getWinnerIndices); immutable state, no React.
 
 ### 2026-06-11 — Phase 2 complete
 - Dev-server JSON API for board and saved-game files; typed validation in `loadBoard.ts`.
