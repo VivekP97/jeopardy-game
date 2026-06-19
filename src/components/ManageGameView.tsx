@@ -150,6 +150,20 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
+    if (!saveMessage) {
+      return
+    }
+
+    const timerId = window.setTimeout(() => {
+      setSaveMessage('')
+    }, 5000)
+
+    return () => {
+      window.clearTimeout(timerId)
+    }
+  }, [saveMessage])
+
+  useEffect(() => {
     let cancelled = false
 
     void loadBoard().then((result) => {
@@ -331,12 +345,6 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
         </Alert>
       ) : null}
 
-      {saveMessage ? (
-        <Alert severity="success" onClose={() => setSaveMessage('')}>
-          {saveMessage}
-        </Alert>
-      ) : null}
-
       <TableContainer
         component={Paper}
         sx={{
@@ -434,7 +442,12 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
         </Table>
       </TableContainer>
 
-      <Stack direction="row" spacing={2}>
+      <Stack
+        direction="row"
+        spacing={2}
+        useFlexGap
+        sx={{ flexWrap: 'wrap', alignItems: 'center' }}
+      >
         <Button
           variant="contained"
           color="secondary"
@@ -451,6 +464,15 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
         >
           Reset
         </Button>
+        {saveMessage ? (
+          <Alert
+            severity="success"
+            onClose={() => setSaveMessage('')}
+            sx={{ py: 0.5, flex: { xs: '1 1 100%', sm: '0 1 auto' } }}
+          >
+            {saveMessage}
+          </Alert>
+        ) : null}
       </Stack>
     </Stack>
   )

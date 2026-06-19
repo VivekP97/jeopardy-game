@@ -38,6 +38,12 @@ export const theme = createTheme({
       dark: '#050aa0',
       contrastText: '#ffd700',
     },
+    success: {
+      main: '#66bb6a',
+      light: '#98ee99',
+      dark: '#388e3c',
+      contrastText: '#0a2e0c',
+    },
   },
   shape: {
     borderRadius: 8,
@@ -103,6 +109,15 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           alignItems: 'center',
+          '&.MuiAlert-standardSuccess': {
+            backgroundColor: '#43a047',
+            color: '#ffffff',
+            border: '1px solid #a5d6a7',
+            fontWeight: 600,
+          },
+          '&.MuiAlert-standardSuccess .MuiAlert-icon': {
+            color: '#e8f5e9',
+          },
         },
       },
     },
