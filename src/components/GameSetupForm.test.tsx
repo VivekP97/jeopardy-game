@@ -61,7 +61,15 @@ describe('GameSetupForm', () => {
     renderWithTheme(
       <GameSetupForm
         onStart={vi.fn()}
-        savedGameAt="2026-06-12T12:00:00.000Z"
+        savedGamePreview={{
+          savedAt: '2026-06-12T12:00:00.000Z',
+          players: [
+            { id: 'p1', name: 'Alice' },
+            { id: 'p2', name: 'Bob' },
+            { id: 'p3', name: 'Carol' },
+          ],
+          scores: [200, 0, 400],
+        }}
         onContinueSavedGame={onContinueSavedGame}
         onAbandonSave={onAbandonSave}
       />,
@@ -74,11 +82,38 @@ describe('GameSetupForm', () => {
     expect(onAbandonSave).toHaveBeenCalledOnce()
   })
 
+  it('shows saved game player names and scores', () => {
+    renderWithTheme(
+      <GameSetupForm
+        onStart={vi.fn()}
+        savedGamePreview={{
+          savedAt: '2026-06-12T12:00:00.000Z',
+          players: [
+            { id: 'p1', name: 'Alice' },
+            { id: 'p2', name: 'Bob' },
+          ],
+          scores: [600, 1200],
+        }}
+        onContinueSavedGame={vi.fn()}
+        onAbandonSave={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByText('Alice')).toBeInTheDocument()
+    expect(screen.getByText('Bob')).toBeInTheDocument()
+    expect(screen.getByText('$600')).toBeInTheDocument()
+    expect(screen.getByText('$1,200')).toBeInTheDocument()
+  })
+
   it('disables continue and abandon buttons while loading actions run', () => {
     renderWithTheme(
       <GameSetupForm
         onStart={vi.fn()}
-        savedGameAt="2026-06-12T12:00:00.000Z"
+        savedGamePreview={{
+          savedAt: '2026-06-12T12:00:00.000Z',
+          players: [{ id: 'p1', name: 'Alice' }],
+          scores: [0],
+        }}
         onContinueSavedGame={vi.fn()}
         onAbandonSave={vi.fn()}
         isContinuing

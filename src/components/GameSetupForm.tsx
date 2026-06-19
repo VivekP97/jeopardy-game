@@ -15,9 +15,15 @@ import type { GameConfig, Player } from '../types/game'
 const MIN_PLAYERS = 3
 const MAX_PLAYERS = 5
 
+export type SavedGamePreview = {
+  savedAt: string
+  players: Player[]
+  scores: number[]
+}
+
 export type GameSetupFormProps = {
   onStart: (config: GameConfig) => void
-  savedGameAt?: string | null
+  savedGamePreview?: SavedGamePreview | null
   savedGameError?: string
   onContinueSavedGame?: () => void
   onAbandonSave?: () => void
@@ -30,7 +36,17 @@ function formatSavedAt(iso: string): string {
   if (Number.isNaN(date.getTime())) {
     return iso
   }
-  return date.toLocaleString()
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
+function formatScore(score: number): string {
+  return `$${score.toLocaleString()}`
 }
 
 function defaultNames(count: number): string[] {
@@ -39,7 +55,7 @@ function defaultNames(count: number): string[] {
 
 export default function GameSetupForm({
   onStart,
-  savedGameAt = null,
+  savedGamePreview = null,
   savedGameError = '',
   onContinueSavedGame,
   onAbandonSave,
@@ -92,90 +108,132 @@ export default function GameSetupForm({
   }
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 480 }}>
-      {savedGameAt && onContinueSavedGame ? (
-        <Paper sx={{ p: 3 }}>
-          <Typography variant="h5" color="secondary" gutterBottom>
-            Continue Saved Game
-          </Typography>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
-            Saved {formatSavedAt(savedGameAt)}
-          </Typography>
-          <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onContinueSavedGame}
-              disabled={isContinuing || isAbandoning}
-            >
-              {isContinuing ? 'Loading…' : 'Continue saved game'}
-            </Button>
-            {onAbandonSave ? (
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={onAbandonSave}
-                disabled={isContinuing || isAbandoning}
-              >
-                {isAbandoning ? 'Clearing…' : 'Abandon save'}
-              </Button>
-            ) : null}
-          </Stack>
-        </Paper>
-      ) : null}
-
+    <Stack spacing={3}>
       {savedGameError ? (
         <Alert severity="warning">{savedGameError}</Alert>
       ) : null}
 
-      <Paper sx={{ p: 4 }}>
-      <Typography variant="h4" color="secondary" gutterBottom>
-        New Game
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>
-        Choose 3–5 players and enter their names.
-      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: 3,
+          alignItems: 'stretch',
+        }}
+      >
+        <Paper sx={{ p: 4, flex: 1, minWidth: 0, maxWidth: { md: 480 } }}>
+          <Typography variant="h4" color="secondary" gutterBottom>
+            New Game
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Choose 3–5 players and enter their names.
+          </Typography>
 
-      <Stack spacing={3}>
-        <FormControl fullWidth>
-          <InputLabel id="player-count-label">Number of players</InputLabel>
-          <Select
-            labelId="player-count-label"
-            label="Number of players"
-            value={playerCount}
-            onChange={(event) => handleCountChange(Number(event.target.value))}
-          >
-            {Array.from(
-              { length: MAX_PLAYERS - MIN_PLAYERS + 1 },
-              (_, index) => MIN_PLAYERS + index,
-            ).map((count) => (
-              <MenuItem key={count} value={count}>
-                {count} players
-              </MenuItem>
+          <Stack spacing={3}>
+            <FormControl fullWidth>
+              <InputLabel id="player-count-label">Number of players</InputLabel>
+              <Select
+                labelId="player-count-label"
+                label="Number of players"
+                value={playerCount}
+                onChange={(event) => handleCountChange(Number(event.target.value))}
+              >
+                {Array.from(
+                  { length: MAX_PLAYERS - MIN_PLAYERS + 1 },
+                  (_, index) => MIN_PLAYERS + index,
+                ).map((count) => (
+                  <MenuItem key={count} value={count}>
+                    {count} players
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {names.map((name, index) => (
+              <TextField
+                key={index}
+                label={`Player ${index + 1}`}
+                value={name}
+                onChange={(event) => handleNameChange(index, event.target.value)}
+                fullWidth
+                error={error.length > 0 && name.trim().length === 0}
+              />
             ))}
-          </Select>
-        </FormControl>
 
-        {names.map((name, index) => (
-          <TextField
-            key={index}
-            label={`Player ${index + 1}`}
-            value={name}
-            onChange={(event) => handleNameChange(index, event.target.value)}
-            fullWidth
-            error={error.length > 0 && name.trim().length === 0}
-          />
-        ))}
+            {error ? <Alert severity="error">{error}</Alert> : null}
 
-        {error ? <Alert severity="error">{error}</Alert> : null}
+            <Box>
+              <Button variant="contained" color="secondary" size="large" onClick={handleStart}>
+                Start Game
+              </Button>
+            </Box>
+          </Stack>
+        </Paper>
 
-        <Box>
-          <Button variant="contained" color="secondary" size="large" onClick={handleStart}>
-            Start Game
-          </Button>
-        </Box>
-      </Stack>
-      </Paper>
+        {savedGamePreview && onContinueSavedGame ? (
+          <Paper
+            sx={{
+              p: 4,
+              flex: 1,
+              minWidth: 0,
+              maxWidth: { md: 480 },
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Typography variant="h4" color="secondary" gutterBottom>
+              Continue Saved Game
+            </Typography>
+            <Typography color="text.secondary" sx={{ mb: 2 }}>
+              Saved {formatSavedAt(savedGamePreview.savedAt)}
+            </Typography>
+
+            <Stack spacing={1.5} sx={{ mb: 3, flexGrow: 1 }}>
+              {savedGamePreview.players.map((player, index) => (
+                <Box
+                  key={player.id}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                    gap: 2,
+                    py: 1,
+                    px: 1.5,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(255, 255, 255, 0.04)',
+                  }}
+                >
+                  <Typography variant="subtitle1">{player.name}</Typography>
+                  <Typography variant="subtitle1" color="secondary">
+                    {formatScore(savedGamePreview.scores[index] ?? 0)}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+
+            <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={onContinueSavedGame}
+                disabled={isContinuing || isAbandoning}
+              >
+                {isContinuing ? 'Loading…' : 'Continue saved game'}
+              </Button>
+              {onAbandonSave ? (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={onAbandonSave}
+                  disabled={isContinuing || isAbandoning}
+                >
+                  {isAbandoning ? 'Clearing…' : 'Abandon save'}
+                </Button>
+              ) : null}
+            </Stack>
+          </Paper>
+        ) : null}
+      </Box>
     </Stack>
   )
 }

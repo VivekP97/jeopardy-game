@@ -19,11 +19,11 @@ import {
   resumeGameFromSave,
   selectClue,
 } from '../game/engine'
-import type { Board, Clue, GameConfig, GameState } from '../types/game'
+import type { Board, Clue, GameConfig, GameState, SavedGamePayload } from '../types/game'
 import BuzzPanel from './BuzzPanel'
 import CluePanel from './CluePanel'
 import GameComplete from './GameComplete'
-import GameSetupForm from './GameSetupForm'
+import GameSetupForm, { type SavedGamePreview } from './GameSetupForm'
 import JeopardyBoard from './JeopardyBoard'
 import Scoreboard from './Scoreboard'
 import ViewStateMessage from './ViewStateMessage'
@@ -44,12 +44,20 @@ export type PlayGameViewProps = {
   boardRevision?: number
 }
 
+function savedPayloadToPreview(payload: SavedGamePayload): SavedGamePreview {
+  return {
+    savedAt: payload.savedAt,
+    players: payload.config.players,
+    scores: payload.scores,
+  }
+}
+
 export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
   const [status, setStatus] = useState<LoadStatus>('loading')
   const [board, setBoard] = useState<Board | null>(null)
   const [error, setError] = useState('')
   const [gameState, setGameState] = useState<GameState | null>(null)
-  const [savedGameAt, setSavedGameAt] = useState<string | null>(null)
+  const [savedGamePreview, setSavedGamePreview] = useState<SavedGamePreview | null>(null)
   const [savedGameError, setSavedGameError] = useState('')
   const [saveActionError, setSaveActionError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
@@ -94,12 +102,14 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
       }
 
       if (result.ok) {
-        setSavedGameAt(result.savedGame?.savedAt ?? null)
+        setSavedGamePreview(
+          result.savedGame ? savedPayloadToPreview(result.savedGame) : null,
+        )
         setSavedGameError('')
         return
       }
 
-      setSavedGameAt(null)
+      setSavedGamePreview(null)
       setSavedGameError(result.error)
     })
 
@@ -134,7 +144,7 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
 
     if (!result.savedGame) {
       setSavedGameError('No saved game found.')
-      setSavedGameAt(null)
+      setSavedGamePreview(null)
       setIsContinuing(false)
       return
     }
@@ -155,7 +165,7 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
       return
     }
 
-    setSavedGameAt(null)
+    setSavedGamePreview(null)
     setSavedGameError('')
     setIsAbandoning(false)
   }
@@ -177,7 +187,7 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
       return
     }
 
-    setSavedGameAt(payload.savedAt)
+    setSavedGamePreview(savedPayloadToPreview(payload))
     setGameState(null)
     setIsSaving(false)
   }
@@ -240,10 +250,10 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
     return (
       <GameSetupForm
         onStart={handleStartGame}
-        savedGameAt={savedGameAt}
+        savedGamePreview={savedGamePreview}
         savedGameError={savedGameError}
-        onContinueSavedGame={savedGameAt ? handleContinueSavedGame : undefined}
-        onAbandonSave={savedGameAt ? handleAbandonSave : undefined}
+        onContinueSavedGame={savedGamePreview ? handleContinueSavedGame : undefined}
+        onAbandonSave={savedGamePreview ? handleAbandonSave : undefined}
         isContinuing={isContinuing}
         isAbandoning={isAbandoning}
       />
