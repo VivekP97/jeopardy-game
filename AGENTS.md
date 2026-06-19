@@ -10,9 +10,9 @@ Browser-based **Jeopardy-style party game** for 3–5 players. A human host read
 |---|---|
 | **Stack** | React 19, TypeScript 6, Vite 8, Material UI (MUI) |
 | **Package manager** | npm |
-| **Persistence** | JSON files under `public/data/` via dev-server API (Phase 2+) |
+| **Persistence** | JSON files under `public/data/` via dev-server API |
 
-Full game rules, JSON schemas, and acceptance criteria: [`docs/01-create-game/spec.md`](docs/01-create-game/spec.md).
+**Agent onboarding:** [`docs/agent/codebase-map.md`](docs/agent/codebase-map.md) — screen flow, components, where to edit. Game rules: [`docs/agent/game-domain.md`](docs/agent/game-domain.md). Original build spec (historical): [`docs/01-create-game/spec.md`](docs/01-create-game/spec.md).
 
 ## Commands
 
@@ -21,7 +21,7 @@ Run from the repository root:
 ```bash
 npm install          # First-time setup
 npm run dev          # Dev server (http://localhost:5173)
-npm run build        # Typecheck + production bundle — run after every phase
+npm run build        # Typecheck + production bundle
 npm run lint         # ESLint
 npm run preview      # Preview production build
 npm test             # Vitest (watch mode)
@@ -33,18 +33,15 @@ npm run test:coverage # Vitest with coverage thresholds
 
 ## How to work here
 
-This project is built **one phase at a time**. Before writing code:
+Before writing code:
 
-1. Read [`docs/01-create-game/spec.md`](docs/01-create-game/spec.md) fully.
-2. Find the next unchecked phase in [`docs/01-create-game/progress.md`](docs/01-create-game/progress.md).
-3. Create a **feature branch** for that phase — **never commit directly on `master`**.
-4. Implement **only that phase** per [`docs/01-create-game/implementation-plan.md`](docs/01-create-game/implementation-plan.md).
-5. Commit work on the feature branch in **reasonable chunks** as you go (no permission needed on feature branches).
-6. Run phase validation (`npm run build` at minimum).
-7. Update `progress.md` with checkmarks and a dated milestone note.
-8. Stop unless the user requests the next phase.
+1. Read [`docs/agent/codebase-map.md`](docs/agent/codebase-map.md) for structure and edit locations.
+2. Read [`docs/agent/game-domain.md`](docs/agent/game-domain.md) if changing gameplay or buzz/scoring rules.
+3. Create a **feature branch** for the task — **never commit directly on `master`**.
+4. Run `npm run build` (and `npm run test:run` when touching engine, data, or tested UI).
+5. Keep changes scoped to what was requested.
 
-See [`docs/agent/workflow.md`](docs/agent/workflow.md) for detailed workflow rules.
+See [`docs/agent/workflow.md`](docs/agent/workflow.md) for branch/commit conventions. The phased build history in [`docs/01-create-game/`](docs/01-create-game/) is reference only unless the user asks to continue that plan.
 
 ## Git and commits
 
@@ -70,8 +67,9 @@ public/data/
 - **UI components** call engine functions; they do not embed scoring or buzz rules.
 - **Data layer** validates JSON on load/save; never trust raw fetch results.
 - **Dev file API** in `vite.config.ts` — `GET/PUT /api/board`, `GET/PUT /api/saved-game` (see [`docs/agent/architecture.md`](docs/agent/architecture.md)).
+- **`PlayGameView`** holds `GameState` during play; **`App.tsx`** is navigation only.
 
-Details: [`docs/agent/architecture.md`](docs/agent/architecture.md).
+Details: [`docs/agent/architecture.md`](docs/agent/architecture.md) and [`docs/agent/codebase-map.md`](docs/agent/codebase-map.md).
 
 ## Coding standards (summary)
 
@@ -81,7 +79,7 @@ Details: [`docs/agent/architecture.md`](docs/agent/architecture.md).
 - Prefer named exports for utilities; default export for page-level components is fine.
 - Match existing file naming: `PascalCase.tsx` for components, `camelCase.ts` for modules.
 - Build UI with **Material UI** — use MUI components and a themed Jeopardy palette (`src/theme.ts`); avoid raw HTML styling.
-- Minimize scope — implement what the current phase requires, nothing ahead.
+- Minimize scope — implement what was requested, nothing extra.
 
 Full conventions: [`docs/agent/coding-standards.md`](docs/agent/coding-standards.md).
 
@@ -104,18 +102,16 @@ Details: [`docs/agent/game-domain.md`](docs/agent/game-domain.md).
 
 **Do**
 
-- Create a feature branch before starting each phase; commit on that branch without asking.
-- Split phase work into logical commits as you go (not one giant commit at the end).
-- Follow the phased plan and update `progress.md` when a phase completes.
+- Create a feature branch before starting work; commit on that branch when the user asks.
 - Run `npm run build` before finishing a task.
 - Run `npm run test:run` when changing game logic, data validation, or tested UI flows.
-- Implement the dev-server JSON API and save/load patterns described in [`docs/agent/architecture.md`](docs/agent/architecture.md).
+- Follow save/load and validation patterns in [`docs/agent/architecture.md`](docs/agent/architecture.md).
 - Handle invalid JSON and corrupt saves with friendly UI errors.
 
 **Do not**
 
 - Work or commit directly on **`master`** — always use a feature branch.
-- Skip phases or implement future features (Daily Double, sounds, answer timer) unless explicitly requested.
+- Implement out-of-scope features (Daily Double, sounds, answer timer) unless explicitly requested.
 - Add backend/database dependencies — v1 is static + dev-server file API only.
 - Import React into `src/game/` or put game rules in components.
 - Push to remote unless the user explicitly asks.
@@ -124,20 +120,19 @@ Details: [`docs/agent/game-domain.md`](docs/agent/game-domain.md).
 
 ## Validation checklist
 
-Before marking a phase complete:
+Before finishing a task:
 
-- [ ] `npm run test:run` passes
+- [ ] `npm run test:run` passes (when engine, data, or tested UI changed)
 - [ ] `npm run build` passes with no TypeScript errors
-- [ ] `npm run lint` passes (required from Phase 7 onward; run when ESLint is configured)
-- [ ] Manual smoke test steps from the implementation plan pass
-- [ ] `docs/01-create-game/progress.md` updated
+- [ ] `npm run lint` passes when ESLint is configured
 
 ## Supplementary docs
 
 | File | Contents |
 |------|----------|
-| [`docs/agent/workflow.md`](docs/agent/workflow.md) | Phased development, progress tracking, when to stop |
+| [`docs/agent/codebase-map.md`](docs/agent/codebase-map.md) | **Start here** — screen flow, components, edit locations |
+| [`docs/agent/workflow.md`](docs/agent/workflow.md) | Feature branches, commits, validation |
 | [`docs/agent/architecture.md`](docs/agent/architecture.md) | Module layout, engine/UI boundary, data flow |
 | [`docs/agent/coding-standards.md`](docs/agent/coding-standards.md) | TypeScript, React, Material UI, and file conventions |
-| [`docs/agent/game-domain.md`](docs/agent/game-domain.md) | Gameplay rules, state machine, JSON schemas |
-| [`docs/01-create-game/`](docs/01-create-game/) | Spec, implementation plan, progress checklist |
+| [`docs/agent/game-domain.md`](docs/agent/game-domain.md) | Gameplay rules, buzz/steal logic, JSON schemas |
+| [`docs/01-create-game/`](docs/01-create-game/) | Historical spec, implementation plan, progress checklist |

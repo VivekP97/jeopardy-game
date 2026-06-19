@@ -16,9 +16,10 @@ src/
     saveBoard.ts          # PUT board via /api/board
     savedGame.ts          # Save/load/validate saved-game.json
   game/
-    engine.ts             # createGame, selectClue, openBuzz, buzz, judgeAnswer
+    engine.ts             # createGame, resumeGameFromSave, selectClue, openBuzz, buzz, judgeAnswer
     board.ts              # remaining clues, isGameComplete, getWinnerIndices
   components/
+    PlayGameView.tsx      # Play orchestrator — holds GameState, wires engine + save/load
     GameSetupForm.tsx
     JeopardyBoard.tsx
     CluePanel.tsx
@@ -26,8 +27,9 @@ src/
     Scoreboard.tsx
     GameComplete.tsx
     ManageGameView.tsx
+    ViewStateMessage.tsx  # Load/error empty states
   theme.ts                # MUI createTheme — Jeopardy palette
-  App.tsx                 # Sidebar nav + view orchestration
+  App.tsx                 # Sidebar nav; switches Play vs Manage
   main.tsx                # ThemeProvider + CssBaseline
 vite.config.ts            # Dev-only /api/board and /api/saved-game middleware
 docs/
@@ -35,7 +37,7 @@ docs/
   agent/                  # Agent guidance supplements
 ```
 
-Create files as phases require them — do not scaffold the full tree in Phase 1.
+Runtime UI flow and component map: [`codebase-map.md`](codebase-map.md).
 
 ## Layer boundaries
 
@@ -72,12 +74,11 @@ export function judgeAnswer(state: GameState, correct: boolean): GameState {
 - `ThemeProvider` and `CssBaseline` wrap the app in `main.tsx`.
 - All views share one theme for a polished, consistent look.
 
-### `App.tsx` — orchestration
+### `App.tsx` + `PlayGameView.tsx` — orchestration
 
-- Sidebar: **Play Game**, **Manage Game**.
-- Holds authoritative `GameState` during play.
-- Wires engine transitions: setup → playing → complete.
-- Triggers save/load through `src/data/savedGame.ts`.
+- **`App.tsx`** — sidebar (**Play Game**, **Manage Game**); passes `boardRevision` to Play so the board reloads after Manage saves.
+- **`PlayGameView.tsx`** — holds authoritative `GameState` during play; loads board and saved game; calls engine functions and passes updated state to child components; save/load via `src/data/savedGame.ts`.
+- Engine transitions: setup → playing → complete. See [`codebase-map.md`](codebase-map.md) for the screen flow.
 
 ## Data flow (Play Game)
 
@@ -102,7 +103,7 @@ Implement in `vite.config.ts` as dev-only Connect middleware:
 | `GET/PUT /api/board` | `public/data/board.json` |
 | `GET/PUT /api/saved-game` | `public/data/saved-game.json` |
 
-Document this limitation in the root README (Phase 7).
+Documented in the root [`README.md`](../../README.md).
 
 ## JSON files
 

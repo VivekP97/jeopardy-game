@@ -2,7 +2,17 @@
 
 How AI agents should plan, implement, and validate work in this repository.
 
-## Phased development
+For codebase orientation, start with [`codebase-map.md`](codebase-map.md). The sections below on **phased development** describe the original build process in [`../01-create-game/`](../01-create-game/) — use that only when the user asks to continue the phased plan.
+
+## Default behavior (ongoing work)
+
+1. **Read first** — [`codebase-map.md`](codebase-map.md); [`game-domain.md`](game-domain.md) if changing rules.
+2. **Branch first** — create a feature branch for the task; never work on `master`.
+3. **Scope** — implement what was requested; defer out-of-scope items unless the user confirms.
+4. **Validate before done** — `npm run build`; `npm run test:run` when engine, data, or tested UI changed.
+5. **Commit when asked** — follow user instructions for git commits.
+
+## Phased development (historical)
 
 This project is intentionally built in **7 phases** (plus Phase 0 scaffold). Each phase has:
 
@@ -10,7 +20,9 @@ This project is intentionally built in **7 phases** (plus Phase 0 scaffold). Eac
 - Validation steps (usually `npm run build` + manual browser checks)
 - Checklist items in [`../01-create-game/progress.md`](../01-create-game/progress.md)
 
-### Default behavior
+### When continuing the phased plan
+
+If the user explicitly asks to continue the original build phases:
 
 1. **Read first** — `spec.md` before any code; implementation plan before the current phase.
 2. **Branch first** — create a feature branch for the phase; never work on `master`.
@@ -21,13 +33,10 @@ This project is intentionally built in **7 phases** (plus Phase 0 scaffold). Eac
 7. **Update progress** — check off items and add a dated note under "Milestone notes".
 8. **Stop and wait** — after completing a phase, summarize what was done and wait for the user.
 
-### When the user gives a free-form request
+For ad-hoc requests outside the phased plan (e.g., "add a timer"):
 
-If the user asks for something outside the phased plan (e.g., "add a timer"):
-
-- Check whether it is in scope per `spec.md`.
+- Check whether it is in scope per `spec.md` / [`game-domain.md`](game-domain.md).
 - If out of scope, confirm with the user or note it as a future enhancement.
-- If in scope but not in the current phase, prefer completing pending phases first unless the user overrides.
 
 ## Architecture patterns
 

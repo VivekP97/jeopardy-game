@@ -76,18 +76,20 @@ unanswered → selected (question shown) → buzzing → judged
 - `phase` → `"complete"`.
 - Winner: highest score; **ties** allowed and should be displayed.
 
-## Engine functions (Phase 3)
+## Engine functions
 
 | Function | Responsibility |
 |----------|----------------|
 | `createGame(config, board)` | Initial state from setup + board |
+| `resumeGameFromSave(payload)` | Restore in-progress state from save file |
 | `selectClue(state, clueId)` | Only unanswered; set active clue; reset buzz |
 | `openBuzz(state)` | Enable buzzing for active clue |
 | `buzz(state, playerIndex)` | First valid buzz wins; ignore if closed or already attempted |
 | `judgeAnswer(state, correct)` | Apply scoring/steal/selector rules; resolve clue when done |
-| `getWinnerIndices(state)` | Indices of highest scorers (ties) |
 
-Helpers in `board.ts`: `isGameComplete`, remaining clue count.
+Helpers in `board.ts`: `isGameComplete`, `countRemainingClues`, `getWinnerIndices`.
+
+UI flow and buzz status values (`idle` / `open` / `buzzed`): [`codebase-map.md`](codebase-map.md).
 
 ## JSON: `board.json`
 
