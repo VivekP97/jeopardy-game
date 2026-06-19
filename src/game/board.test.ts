@@ -1,115 +1,50 @@
+import { describe, expect, it } from 'vitest'
 import {
-  countRemainingClues,
-  getAllClueIds,
-  getWinnerIndices,
-  isGameComplete,
+  getRowValues,
+  parseClueValueInput,
+  setRowValueAndSort,
+  sortBoardRowsByValue,
 } from './board'
-import { createGame } from './engine'
-import {
-  createStandardBoard,
-  createTestBoard,
-  createTestConfig,
-  getClueId,
-} from '../test/fixtures/board'
-import { playThroughClue } from '../test/helpers/engine'
-import type { GameState } from '../types/game'
+import { createStandardBoard } from '../test/fixtures/board'
 
-function makeState(scores: number[]): GameState {
-  const board = createTestBoard()
-  const config = createTestConfig(scores.length)
-  return {
-    config,
-    board,
-    scores,
-    currentSelectorIndex: 0,
-    phase: 'playing',
-    clueStates: Object.fromEntries(
-      getAllClueIds(board).map((id) => [id, 'unanswered' as const]),
-    ),
-    activeClueId: null,
-    buzzState: {
-      status: 'idle',
-      buzzedPlayerIndex: null,
-      attemptedPlayerIndices: [],
-      isSteal: false,
-    },
-  }
-}
-
-describe('getAllClueIds', () => {
-  it('returns 30 ids for a standard board in category-major order', () => {
+describe('board row values', () => {
+  it('getRowValues returns values from the first category', () => {
     const board = createStandardBoard()
-    const ids = getAllClueIds(board)
 
-    expect(ids).toHaveLength(30)
-    expect(ids[0]).toBe('cat-1-200')
-    expect(ids[5]).toBe('cat-2-200')
-    expect(ids).toEqual(getAllClueIds(board))
-  })
-})
-
-describe('countRemainingClues', () => {
-  it('matches the number of unanswered clues', () => {
-    const board = createTestBoard()
-    const state = createGame(createTestConfig(), board)
-
-    expect(countRemainingClues(state)).toBe(getAllClueIds(board).length)
+    expect(getRowValues(board)).toEqual([200, 400, 600, 800, 1000])
   })
 
-  it('decreases after a clue is answered', () => {
-    const board = createTestBoard()
-    const clueId = getClueId(board, 0, 0)
-    let state = createGame(createTestConfig(), board)
-    const before = countRemainingClues(state)
+  it('sortBoardRowsByValue reorders rows by ascending value', () => {
+    const board = createStandardBoard()
+    board.categories.forEach((category) => {
+      category.clues[0].value = 900
+      category.clues[4].value = 100
+    })
 
-    state = playThroughClue(state, { clueId, buzzer: 0, correct: true })
+    const sorted = sortBoardRowsByValue(board)
 
-    expect(countRemainingClues(state)).toBe(before - 1)
-  })
-})
-
-describe('isGameComplete', () => {
-  it('is false while any clue remains unanswered', () => {
-    const state = createGame(createTestConfig(), createTestBoard())
-
-    expect(isGameComplete(state)).toBe(false)
-  })
-
-  it('is true when all clues are answered', () => {
-    const board = createTestBoard()
-    let state = createGame(createTestConfig(), board)
-
-    for (const clueId of getAllClueIds(board)) {
-      state = playThroughClue(state, { clueId, buzzer: 0, correct: true })
-    }
-
-    expect(isGameComplete(state)).toBe(true)
+    expect(getRowValues(sorted)).toEqual([100, 400, 600, 800, 900])
+    expect(sorted.categories[0].clues[0].question).toBe(
+      board.categories[0].clues[4].question,
+    )
+    expect(sorted.categories[0].clues[4].question).toBe(
+      board.categories[0].clues[0].question,
+    )
   })
 
-  it('is true when phase is already complete', () => {
-    const state = {
-      ...createGame(createTestConfig(), createTestBoard()),
-      phase: 'complete' as const,
-    }
+  it('setRowValueAndSort updates all categories and reorders rows', () => {
+    const board = createStandardBoard()
+    const next = setRowValueAndSort(board, 0, 750)
 
-    expect(isGameComplete(state)).toBe(true)
-  })
-})
-
-describe('getWinnerIndices', () => {
-  it('returns a single winner index', () => {
-    expect(getWinnerIndices(makeState([100, 500, 200]))).toEqual([1])
+    expect(getRowValues(next)).toEqual([400, 600, 750, 800, 1000])
+    expect(next.categories[0].clues[2].question).toBe('Question 1-1?')
   })
 
-  it('returns all tied winner indices', () => {
-    expect(getWinnerIndices(makeState([300, 300, 100]))).toEqual([0, 1])
-  })
-
-  it('returns an empty array for empty scores', () => {
-    expect(getWinnerIndices(makeState([]))).toEqual([])
-  })
-
-  it('returns all indices when every score is zero', () => {
-    expect(getWinnerIndices(makeState([0, 0, 0]))).toEqual([0, 1, 2])
+  it('parseClueValueInput accepts dollar-prefixed integers', () => {
+    expect(parseClueValueInput('$500')).toBe(500)
+    expect(parseClueValueInput(' 300 ')).toBe(300)
+    expect(parseClueValueInput('')).toBeNull()
+    expect(parseClueValueInput('0')).toBeNull()
+    expect(parseClueValueInput('2.5')).toBeNull()
   })
 })

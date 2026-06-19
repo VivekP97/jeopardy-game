@@ -4,6 +4,7 @@ import {
   loadBoard,
   validateBoard,
 } from './loadBoard'
+import { getRowValues } from '../game/board'
 import { createStandardBoard } from '../test/fixtures/board'
 import { server } from '../test/msw/server'
 
@@ -12,6 +13,31 @@ describe('validateBoard', () => {
     const board = createStandardBoard()
 
     expect(validateBoard(board)).toEqual(board)
+  })
+
+  it('accepts custom ascending row values', () => {
+    const board = createStandardBoard()
+    const customValues = [100, 250, 500, 750, 900]
+
+    board.categories.forEach((category) => {
+      category.clues.forEach((clue, index) => {
+        clue.value = customValues[index]
+      })
+    })
+
+    expect(getRowValues(validateBoard(board))).toEqual(customValues)
+  })
+
+  it('sorts out-of-order row values on validate', () => {
+    const board = createStandardBoard()
+    board.categories.forEach((category) => {
+      category.clues[0].value = 1000
+      category.clues[4].value = 200
+    })
+
+    const validated = validateBoard(board)
+
+    expect(getRowValues(validated)).toEqual([200, 400, 600, 800, 1000])
   })
 
   it('trims whitespace on string fields', () => {
@@ -55,13 +81,24 @@ describe('validateBoard', () => {
       expectedError: 'categories[0].clues must contain exactly 5 clues.',
     },
     {
-      name: 'wrong row value',
+      name: 'mismatched row values across categories',
       input: (() => {
         const board = createStandardBoard()
-        board.categories[0].clues[0].value = 999
+        board.categories[1].clues[0].value = 300
         return board
       })(),
-      expectedError: 'categories[0].clues[0].value must be 200 for row 1.',
+      expectedError: 'Row 1 values must match across all categories.',
+    },
+    {
+      name: 'duplicate row values',
+      input: (() => {
+        const board = createStandardBoard()
+        board.categories.forEach((category) => {
+          category.clues[1].value = 200
+        })
+        return board
+      })(),
+      expectedError: 'Row values must strictly increase',
     },
     {
       name: 'empty category title',

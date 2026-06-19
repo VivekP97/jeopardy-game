@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
+import InputAdornment from '@mui/material/InputAdornment'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Table from '@mui/material/Table'
@@ -13,12 +14,13 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import {
-  CLUE_VALUES_BY_ROW,
-  loadBoard,
-  validateBoard,
-} from '../data/loadBoard'
+import { loadBoard, validateBoard } from '../data/loadBoard'
 import { saveBoard } from '../data/saveBoard'
+import {
+  getRowValues,
+  parseClueValueInput,
+  setRowValueAndSort,
+} from '../game/board'
 import type { Board } from '../types/game'
 import ViewStateMessage from './ViewStateMessage'
 
@@ -49,11 +51,14 @@ const tableCellBase = {
   px: 1.5,
 }
 
+const valueColumnWidth = 128
+
 const valueHeaderCellSx = {
   ...tableCellBase,
   fontWeight: 700,
   color: 'secondary.main',
-  width: 96,
+  width: valueColumnWidth,
+  minWidth: valueColumnWidth,
   fontSize: '1.25rem',
   verticalAlign: 'bottom',
   py: 1.5,
@@ -65,6 +70,8 @@ const valueBodyCellSx = {
   ...tableCellBase,
   fontWeight: 700,
   color: 'secondary.main',
+  width: valueColumnWidth,
+  minWidth: valueColumnWidth,
   whiteSpace: 'nowrap' as const,
   fontSize: '1.35rem',
   verticalAlign: 'middle',
@@ -84,6 +91,53 @@ const headerCategoryCellSx = {
   py: 1.5,
   bgcolor: 'rgba(0, 0, 0, 0.15)',
   borderBottom: '2px solid rgba(255, 215, 0, 0.55)',
+}
+
+type RowValueFieldProps = {
+  value: number
+  onCommit: (value: number) => void
+}
+
+function RowValueField({ value, onCommit }: RowValueFieldProps) {
+  const [localValue, setLocalValue] = useState(String(value))
+
+  useEffect(() => {
+    setLocalValue(String(value))
+  }, [value])
+
+  const commitValue = () => {
+    const parsed = parseClueValueInput(localValue)
+    if (parsed === null) {
+      setLocalValue(String(value))
+      return
+    }
+    if (parsed !== value) {
+      onCommit(parsed)
+    }
+  }
+
+  return (
+    <TextField
+      value={localValue}
+      onChange={(event) => setLocalValue(event.target.value)}
+      onBlur={() => commitValue()}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.currentTarget.blur()
+        }
+      }}
+      size="small"
+      fullWidth
+      aria-label="Clue value"
+      slotProps={{
+        input: {
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          sx: { fontWeight: 700, fontSize: '1.1rem', textAlign: 'center' },
+        },
+      }}
+      sx={centeredFieldSx}
+    />
+  )
 }
 
 export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
@@ -160,6 +214,17 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
         return { ...category, clues }
       })
       return { categories }
+    })
+    setValidationError('')
+    setSaveMessage('')
+  }
+
+  const handleRowValueCommit = (rowIndex: number, value: number) => {
+    setDraft((prev) => {
+      if (!prev) {
+        return prev
+      }
+      return setRowValueAndSort(prev, rowIndex, value)
     })
     setValidationError('')
     setSaveMessage('')
@@ -245,6 +310,9 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
     )
   }
 
+  const rowValues = getRowValues(draft)
+  const rowCount = rowValues.length
+
   return (
     <Stack spacing={3}>
       <Box>
@@ -252,8 +320,8 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
           Manage Game
         </Typography>
         <Typography color="text.secondary">
-          Edit category titles, questions, and answers. Dollar values are fixed
-          by row ($200–$1000).
+          Edit category titles, questions, answers, and row values. Rows reorder
+          automatically to keep values increasing top to bottom.
         </Typography>
       </Box>
 
@@ -308,10 +376,13 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {CLUE_VALUES_BY_ROW.map((value, rowIndex) => (
-              <TableRow key={value}>
+            {Array.from({ length: rowCount }, (_, rowIndex) => (
+              <TableRow key={rowIndex}>
                 <TableCell sx={valueBodyCellSx}>
-                  ${value.toLocaleString()}
+                  <RowValueField
+                    value={rowValues[rowIndex]}
+                    onCommit={(value) => handleRowValueCommit(rowIndex, value)}
+                  />
                 </TableCell>
                 {draft.categories.map((category, categoryIndex) => {
                   const clue = category.clues[rowIndex]
