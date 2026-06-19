@@ -116,6 +116,41 @@ export const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         variant: 'outlined',
+        color: 'secondary',
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(255, 215, 0, 0.25)',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(255, 215, 0, 0.5)',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.secondary.main,
+            borderWidth: 2,
+          },
+        }),
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&.Mui-focused': {
+            color: theme.palette.secondary.main,
+          },
+        }),
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&.Mui-focused': {
+            color: theme.palette.secondary.main,
+          },
+        }),
       },
     },
   },

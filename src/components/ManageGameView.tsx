@@ -36,6 +36,56 @@ function boardsEqual(a: Board, b: Board): boolean {
   return JSON.stringify(a) === JSON.stringify(b)
 }
 
+const centeredFieldSx = {
+  '& .MuiInputBase-input': { textAlign: 'center' },
+  '& .MuiInputBase-inputMultiline': { textAlign: 'center' },
+}
+
+const gridBorder = '1px solid rgba(255, 215, 0, 0.32)'
+
+const tableCellBase = {
+  textAlign: 'center' as const,
+  border: gridBorder,
+  px: 1.5,
+}
+
+const valueHeaderCellSx = {
+  ...tableCellBase,
+  fontWeight: 700,
+  color: 'secondary.main',
+  width: 96,
+  fontSize: '1.25rem',
+  verticalAlign: 'bottom',
+  py: 1.5,
+  bgcolor: 'rgba(255, 215, 0, 0.08)',
+  borderBottom: '2px solid rgba(255, 215, 0, 0.55)',
+}
+
+const valueBodyCellSx = {
+  ...tableCellBase,
+  fontWeight: 700,
+  color: 'secondary.main',
+  whiteSpace: 'nowrap' as const,
+  fontSize: '1.35rem',
+  verticalAlign: 'middle',
+  py: 2.5,
+  bgcolor: 'rgba(255, 215, 0, 0.06)',
+}
+
+const bodyRowCellSx = {
+  ...tableCellBase,
+  verticalAlign: 'middle',
+  py: 2.5,
+}
+
+const headerCategoryCellSx = {
+  ...tableCellBase,
+  verticalAlign: 'top',
+  py: 1.5,
+  bgcolor: 'rgba(0, 0, 0, 0.15)',
+  borderBottom: '2px solid rgba(255, 215, 0, 0.55)',
+}
+
 export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
   const [status, setStatus] = useState<LoadStatus>('loading')
   const [loadError, setLoadError] = useState('')
@@ -221,23 +271,24 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
 
       <TableContainer
         component={Paper}
-        sx={{ overflowX: 'auto', bgcolor: 'background.paper' }}
+        sx={{
+          overflowX: 'auto',
+          bgcolor: 'background.paper',
+          border: '1px solid rgba(255, 215, 0, 0.45)',
+        }}
       >
-        <Table size="small" sx={{ minWidth: 960 }}>
+        <Table
+          size="small"
+          sx={{
+            minWidth: 960,
+            borderCollapse: 'collapse',
+          }}
+        >
           <TableHead>
             <TableRow>
-              <TableCell
-                sx={{
-                  fontWeight: 700,
-                  color: 'secondary.main',
-                  width: 80,
-                  verticalAlign: 'bottom',
-                }}
-              >
-                Value
-              </TableCell>
+              <TableCell sx={valueHeaderCellSx}>Value</TableCell>
               {draft.categories.map((category, categoryIndex) => (
-                <TableCell key={category.id} sx={{ verticalAlign: 'top' }}>
+                <TableCell key={category.id} sx={headerCategoryCellSx}>
                   <TextField
                     label={`Category ${categoryIndex + 1}`}
                     value={category.title}
@@ -250,6 +301,7 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
                     fullWidth
                     size="small"
                     required
+                    sx={centeredFieldSx}
                   />
                 </TableCell>
               ))}
@@ -258,23 +310,15 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
           <TableBody>
             {CLUE_VALUES_BY_ROW.map((value, rowIndex) => (
               <TableRow key={value}>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: 'secondary.main',
-                    whiteSpace: 'nowrap',
-                    verticalAlign: 'top',
-                    pt: 2,
-                  }}
-                >
+                <TableCell sx={valueBodyCellSx}>
                   ${value.toLocaleString()}
                 </TableCell>
                 {draft.categories.map((category, categoryIndex) => {
                   const clue = category.clues[rowIndex]
 
                   return (
-                    <TableCell key={clue.id} sx={{ verticalAlign: 'top' }}>
-                      <Stack spacing={1}>
+                    <TableCell key={clue.id} sx={bodyRowCellSx}>
+                      <Stack spacing={1} sx={{ alignItems: 'center' }}>
                         <TextField
                           label="Question"
                           value={clue.question}
@@ -291,6 +335,7 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
                           multiline
                           minRows={2}
                           required
+                          sx={centeredFieldSx}
                         />
                         <TextField
                           label="Answer"
@@ -306,6 +351,7 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
                           fullWidth
                           size="small"
                           required
+                          sx={centeredFieldSx}
                         />
                       </Stack>
                     </TableCell>
