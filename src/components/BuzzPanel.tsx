@@ -40,15 +40,15 @@ export default function BuzzPanel({ state, onBuzz }: BuzzPanelProps) {
         <Typography color="text.secondary" variant="body2">
           Select a clue to enable buzzers.
         </Typography>
-      ) : buzzState.status === 'idle' ? (
-        <Typography color="text.secondary" variant="body2">
-          Host must open buzzers before players can ring in.
-        </Typography>
       ) : buzzState.status === 'buzzed' ? (
         <Typography color="text.secondary" variant="body2">
           Waiting for host to judge the answer.
         </Typography>
-      ) : null}
+      ) : (
+        <Typography color="text.secondary" variant="body2">
+          Host: select the player who buzzed in.
+        </Typography>
+      )}
 
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
@@ -94,7 +94,7 @@ export default function BuzzPanel({ state, onBuzz }: BuzzPanelProps) {
       {hasActiveClue && buzzState.status === 'open' ? (
         <Box sx={{ mt: 2 }}>
           <Typography variant="caption" color="text.secondary">
-            First buzz wins — host judges the verbal answer.
+            Tap a player when they buzz in live.
           </Typography>
         </Box>
       ) : null}

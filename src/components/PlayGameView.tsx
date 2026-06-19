@@ -15,7 +15,6 @@ import {
   buzz,
   createGame,
   judgeAnswer,
-  openBuzz,
   resumeGameFromSave,
   selectClue,
 } from '../game/engine'
@@ -196,10 +195,6 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
     setGameState((prev) => (prev ? selectClue(prev, clueId) : prev))
   }
 
-  const handleOpenBuzz = () => {
-    setGameState((prev) => (prev ? openBuzz(prev) : prev))
-  }
-
   const handleBuzz = (playerIndex: number) => {
     setGameState((prev) => (prev ? buzz(prev, playerIndex) : prev))
   }
@@ -309,7 +304,6 @@ export default function PlayGameView({ boardRevision = 0 }: PlayGameViewProps) {
           clue={activeClue}
           buzzState={gameState.buzzState}
           buzzedPlayerName={buzzedPlayerName}
-          onOpenBuzz={handleOpenBuzz}
           onJudge={handleJudge}
         />
       ) : (

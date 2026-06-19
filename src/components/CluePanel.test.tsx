@@ -17,13 +17,12 @@ describe('CluePanel', () => {
       <CluePanel
         clue={clue}
         buzzState={{
-          status: 'idle',
+          status: 'open',
           buzzedPlayerIndex: null,
           attemptedPlayerIndices: [],
           isSteal: false,
         }}
         buzzedPlayerName={null}
-        onOpenBuzz={vi.fn()}
         onJudge={vi.fn()}
       />,
     )
@@ -38,13 +37,12 @@ describe('CluePanel', () => {
       <CluePanel
         clue={clue}
         buzzState={{
-          status: 'idle',
+          status: 'open',
           buzzedPlayerIndex: null,
           attemptedPlayerIndices: [],
           isSteal: false,
         }}
         buzzedPlayerName={null}
-        onOpenBuzz={vi.fn()}
         onJudge={vi.fn()}
       />,
     )
@@ -54,18 +52,17 @@ describe('CluePanel', () => {
     expect(screen.getByText('Everything')).toBeInTheDocument()
   })
 
-  it('disables judge buttons until someone has buzzed in', () => {
+  it('disables judge buttons until someone has been selected', () => {
     renderWithTheme(
       <CluePanel
         clue={clue}
         buzzState={{
-          status: 'idle',
+          status: 'open',
           buzzedPlayerIndex: null,
           attemptedPlayerIndices: [],
           isSteal: false,
         }}
         buzzedPlayerName={null}
-        onOpenBuzz={vi.fn()}
         onJudge={vi.fn()}
       />,
     )
@@ -74,9 +71,8 @@ describe('CluePanel', () => {
     expect(screen.getByRole('button', { name: 'Incorrect' })).toBeDisabled()
   })
 
-  it('calls parent handlers when buzz is opened and answer is judged', async () => {
+  it('calls onJudge when the host marks an answer', async () => {
     const user = userEvent.setup()
-    const onOpenBuzz = vi.fn()
     const onJudge = vi.fn()
 
     renderWithTheme(
@@ -89,7 +85,6 @@ describe('CluePanel', () => {
           isSteal: false,
         }}
         buzzedPlayerName="Player 1"
-        onOpenBuzz={onOpenBuzz}
         onJudge={onJudge}
       />,
     )

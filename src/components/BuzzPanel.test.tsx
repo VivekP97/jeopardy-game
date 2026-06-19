@@ -16,16 +16,7 @@ describe('BuzzPanel', () => {
     expect(screen.getByText('Select a clue to enable buzzers.')).toBeInTheDocument()
   })
 
-  it('disables buzz buttons when buzzers are not open', () => {
-    const state = createGame(createTestConfig(), createTestBoard())
-    state.activeClueId = 'cat-a-200'
-
-    renderWithTheme(<BuzzPanel state={state} onBuzz={vi.fn()} />)
-
-    expect(screen.getByRole('button', { name: 'Buzz — Player 1' })).toBeDisabled()
-  })
-
-  it('enables eligible players when buzzers are open', () => {
+  it('enables player buttons when a clue is active', () => {
     const state = createGame(createTestConfig(), createTestBoard())
     state.activeClueId = 'cat-a-200'
     state.buzzState.status = 'open'
@@ -33,6 +24,21 @@ describe('BuzzPanel', () => {
     renderWithTheme(<BuzzPanel state={state} onBuzz={vi.fn()} />)
 
     expect(screen.getByRole('button', { name: 'Buzz — Player 1' })).toBeEnabled()
+  })
+
+  it('disables player buttons while waiting for host judgment', () => {
+    const state = createGame(createTestConfig(), createTestBoard())
+    state.activeClueId = 'cat-a-200'
+    state.buzzState = {
+      status: 'buzzed',
+      buzzedPlayerIndex: 0,
+      attemptedPlayerIndices: [],
+      isSteal: false,
+    }
+
+    renderWithTheme(<BuzzPanel state={state} onBuzz={vi.fn()} />)
+
+    expect(screen.getByRole('button', { name: 'Buzz — Player 1' })).toBeDisabled()
   })
 
   it('shows steal round messaging and disables attempted players', () => {

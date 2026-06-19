@@ -52,7 +52,7 @@ describe('createGame', () => {
 })
 
 describe('selectClue', () => {
-  it('activates an unanswered clue and resets buzz state', () => {
+  it('activates an unanswered clue and opens buzzers', () => {
     const board = createTestBoard()
     const state = createGame(createTestConfig(), board)
     const clueId = getClueId(board, 0, 0)
@@ -60,7 +60,7 @@ describe('selectClue', () => {
     const next = selectClue(state, clueId)
 
     expect(next.activeClueId).toBe(clueId)
-    expect(next.buzzState.status).toBe('idle')
+    expect(next.buzzState.status).toBe('open')
     expect(next.buzzState.attemptedPlayerIndices).toEqual([])
   })
 
@@ -124,10 +124,19 @@ describe('selectClue', () => {
 })
 
 describe('openBuzz', () => {
-  it('opens buzzers when a clue is active', () => {
+  it('opens buzzers when a clue is active and buzzers are idle', () => {
     const board = createTestBoard()
     let state = createGame(createTestConfig(), board)
     state = selectClue(state, getClueId(board, 0, 0))
+    state = {
+      ...state,
+      buzzState: {
+        status: 'idle',
+        buzzedPlayerIndex: null,
+        attemptedPlayerIndices: [],
+        isSteal: false,
+      },
+    }
 
     const next = openBuzz(state)
 
@@ -142,16 +151,13 @@ describe('openBuzz', () => {
     },
     {
       name: 'buzz already open',
-      setup: (board: ReturnType<typeof createTestBoard>, state: GameState) => {
-        const withClue = selectClue(state, getClueId(board, 0, 0))
-        return openBuzz(withClue)
-      },
+      setup: (board: ReturnType<typeof createTestBoard>, state: GameState) =>
+        selectClue(state, getClueId(board, 0, 0)),
     },
     {
       name: 'player already buzzed',
       setup: (board: ReturnType<typeof createTestBoard>, state: GameState) => {
         let withClue = selectClue(state, getClueId(board, 0, 0))
-        withClue = openBuzz(withClue)
         return buzz(withClue, 0)
       },
     },
@@ -176,7 +182,6 @@ describe('buzz', () => {
     const board = createTestBoard()
     let state = createGame(createTestConfig(), board)
     state = selectClue(state, getClueId(board, 0, 0))
-    state = openBuzz(state)
 
     const next = buzz(state, 1)
 
@@ -187,16 +192,21 @@ describe('buzz', () => {
   it.each([
     {
       name: 'buzz not open',
-      setup: (board: ReturnType<typeof createTestBoard>, state: GameState) =>
-        selectClue(state, getClueId(board, 0, 0)),
+      setup: (board: ReturnType<typeof createTestBoard>, state: GameState) => ({
+        ...selectClue(state, getClueId(board, 0, 0)),
+        buzzState: {
+          status: 'idle' as const,
+          buzzedPlayerIndex: null,
+          attemptedPlayerIndices: [],
+          isSteal: false,
+        },
+      }),
       playerIndex: 0,
     },
     {
       name: 'invalid player index',
-      setup: (board: ReturnType<typeof createTestBoard>, state: GameState) => {
-        const withClue = selectClue(state, getClueId(board, 0, 0))
-        return openBuzz(withClue)
-      },
+      setup: (board: ReturnType<typeof createTestBoard>, state: GameState) =>
+        selectClue(state, getClueId(board, 0, 0)),
       playerIndex: 99,
     },
     {
@@ -223,7 +233,7 @@ describe('buzz', () => {
   it('rejects when phase is not playing', () => {
     const board = createTestBoard()
     let state = createGame(createTestConfig(), board)
-    state = openBuzz(selectClue(state, getClueId(board, 0, 0)))
+    state = selectClue(state, getClueId(board, 0, 0))
     state = { ...state, phase: 'complete' as const }
 
     expect(buzz(state, 0)).toBe(state)
@@ -235,7 +245,6 @@ describe('buzz', () => {
     let state = createGame(createTestConfig(3), board)
 
     state = playThroughClue(state, { clueId, buzzer: 0, correct: false })
-    state = openBuzz(state)
     state = buzz(state, 1)
 
     expect(state.buzzState.status).toBe('buzzed')
@@ -250,7 +259,6 @@ describe('judgeAnswer — correct', () => {
     const clueId = getClueId(board, 0, 0)
     let state = createGame(createTestConfig(3), board)
     state = selectClue(state, clueId)
-    state = openBuzz(state)
     state = buzz(state, 2)
 
     const next = judgeAnswer(state, true)
@@ -283,7 +291,6 @@ describe('judgeAnswer — incorrect', () => {
     const clueId = getClueId(board, 0, 0)
     let state = createGame(createTestConfig(3), board)
     state = selectClue(state, clueId)
-    state = openBuzz(state)
     state = buzz(state, 0)
     const scoresBefore = [...state.scores]
 
@@ -291,7 +298,7 @@ describe('judgeAnswer — incorrect', () => {
 
     expect(state.scores).toEqual(scoresBefore)
     expect(state.buzzState.isSteal).toBe(true)
-    expect(state.buzzState.status).toBe('idle')
+    expect(state.buzzState.status).toBe('open')
     expect(state.activeClueId).toBe(clueId)
     expect(state.buzzState.attemptedPlayerIndices).toEqual([0])
   })
@@ -330,7 +337,6 @@ describe('judgeAnswer — incorrect', () => {
     const board = createTestBoard()
     let state = createGame(createTestConfig(), board)
     state = selectClue(state, getClueId(board, 0, 0))
-    state = openBuzz(state)
     state = buzz(state, 0)
     const prepared = prepare(state)
 
@@ -340,7 +346,7 @@ describe('judgeAnswer — incorrect', () => {
   it('rejects when buzzedPlayerIndex is null', () => {
     const board = createTestBoard()
     let state = createGame(createTestConfig(), board)
-    state = buzz(openBuzz(selectClue(state, getClueId(board, 0, 0))), 0)
+    state = buzz(selectClue(state, getClueId(board, 0, 0)), 0)
     state = {
       ...state,
       buzzState: { ...state.buzzState, buzzedPlayerIndex: null },
@@ -352,7 +358,7 @@ describe('judgeAnswer — incorrect', () => {
   it('rejects when the active clue is missing from the board', () => {
     const board = createTestBoard()
     let state = createGame(createTestConfig(), board)
-    state = buzz(openBuzz(selectClue(state, getClueId(board, 0, 0))), 0)
+    state = buzz(selectClue(state, getClueId(board, 0, 0)), 0)
     state = {
       ...state,
       activeClueId: 'missing-clue',
@@ -439,6 +445,22 @@ describe('resumeGameFromSave', () => {
     expect(state.activeClueId).toBe(payload.activeClueId)
     expect(state.buzzState).toEqual(payload.buzzState)
     expect(state.scores).toEqual(payload.scores)
+  })
+
+  it('opens buzzers when resuming a saved clue with idle buzz state', () => {
+    const payload = createValidSavedPayload({
+      activeClueId: 'cat-1-200',
+      buzzState: {
+        status: 'idle',
+        buzzedPlayerIndex: null,
+        attemptedPlayerIndices: [],
+        isSteal: false,
+      },
+    })
+
+    const state = resumeGameFromSave(payload)
+
+    expect(state.buzzState.status).toBe('open')
   })
 
   it('preserves buzzed-in state', () => {

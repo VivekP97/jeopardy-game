@@ -15,6 +15,28 @@ const INITIAL_BUZZ_STATE: BuzzState = {
   isSteal: false,
 }
 
+function openBuzzState(
+  attemptedPlayerIndices: number[] = [],
+  isSteal = false,
+): BuzzState {
+  return {
+    status: 'open',
+    buzzedPlayerIndex: null,
+    attemptedPlayerIndices,
+    isSteal,
+  }
+}
+
+function normalizeBuzzStateForResume(
+  activeClueId: string | null,
+  buzzState: BuzzState,
+): BuzzState {
+  if (activeClueId !== null && buzzState.status === 'idle') {
+    return { ...buzzState, status: 'open' }
+  }
+  return buzzState
+}
+
 function findClue(board: Board, clueId: string): Clue | undefined {
   for (const category of board.categories) {
     const clue = category.clues.find((item) => item.id === clueId)
@@ -46,6 +68,14 @@ function withResolvedPhase(state: GameState): GameState {
 }
 
 export function resumeGameFromSave(payload: SavedGamePayload): GameState {
+  const buzzState = normalizeBuzzStateForResume(
+    payload.activeClueId,
+    {
+      ...payload.buzzState,
+      attemptedPlayerIndices: [...payload.buzzState.attemptedPlayerIndices],
+    },
+  )
+
   return {
     config: payload.config,
     board: payload.board,
@@ -54,10 +84,7 @@ export function resumeGameFromSave(payload: SavedGamePayload): GameState {
     phase: payload.phase,
     clueStates: { ...payload.clueStates },
     activeClueId: payload.activeClueId,
-    buzzState: {
-      ...payload.buzzState,
-      attemptedPlayerIndices: [...payload.buzzState.attemptedPlayerIndices],
-    },
+    buzzState,
   }
 }
 
@@ -90,7 +117,7 @@ export function selectClue(state: GameState, clueId: string): GameState {
   return {
     ...state,
     activeClueId: clueId,
-    buzzState: { ...INITIAL_BUZZ_STATE },
+    buzzState: openBuzzState(),
   }
 }
 
@@ -195,11 +222,6 @@ export function judgeAnswer(state: GameState, correct: boolean): GameState {
 
   return {
     ...state,
-    buzzState: {
-      status: 'idle',
-      buzzedPlayerIndex: null,
-      attemptedPlayerIndices,
-      isSteal: true,
-    },
+    buzzState: openBuzzState(attemptedPlayerIndices, true),
   }
 }

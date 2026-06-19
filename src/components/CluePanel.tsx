@@ -11,7 +11,6 @@ export type CluePanelProps = {
   clue: Clue
   buzzState: BuzzState
   buzzedPlayerName: string | null
-  onOpenBuzz: () => void
   onJudge: (correct: boolean) => void
 }
 
@@ -23,12 +22,10 @@ export default function CluePanel({
   clue,
   buzzState,
   buzzedPlayerName,
-  onOpenBuzz,
   onJudge,
 }: CluePanelProps) {
   const [answerRevealed, setAnswerRevealed] = useState(false)
 
-  const canOpenBuzz = buzzState.status === 'idle'
   const canJudge = buzzState.status === 'buzzed' && buzzedPlayerName !== null
 
   return (
@@ -42,10 +39,10 @@ export default function CluePanel({
             <Chip label="Steal!" color="warning" size="small" />
           ) : null}
           {buzzState.status === 'open' ? (
-            <Chip label="Buzzers open" color="success" size="small" variant="outlined" />
+            <Chip label="Select a player" color="success" size="small" variant="outlined" />
           ) : null}
           {buzzState.status === 'buzzed' && buzzedPlayerName ? (
-            <Chip label={`${buzzedPlayerName} buzzed in`} color="info" size="small" />
+            <Chip label={`${buzzedPlayerName} answering`} color="info" size="small" />
           ) : null}
         </Box>
 
@@ -75,14 +72,6 @@ export default function CluePanel({
         )}
 
         <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={onOpenBuzz}
-            disabled={!canOpenBuzz}
-          >
-            Open buzzers
-          </Button>
           <Button
             variant="contained"
             color="success"
