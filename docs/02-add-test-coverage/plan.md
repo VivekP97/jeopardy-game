@@ -1,7 +1,7 @@
 # Unit Test Coverage Plan
 
-Last updated: 2026-06-12  
-Branch: `add-test-coverage`
+Last updated: 2026-06-19  
+Status: **Complete** — merged to `master` (2026-06-12 initiative)
 
 ## Purpose
 
@@ -18,13 +18,29 @@ Add **automated unit and component tests** across the Jeopardy game so gameplay 
 
 ## Success criteria
 
-- [ ] `npm test` runs Vitest in watch and CI modes
-- [ ] `npm run test:coverage` reports coverage with agreed thresholds (see [Coverage targets](#coverage-targets))
-- [ ] Game engine has exhaustive rule coverage (happy paths + invalid transitions + edge cases)
-- [ ] Data validators have table-driven tests for every documented rejection reason
-- [ ] Core play and manage UI flows have component tests with React Testing Library
-- [ ] `docs/agent/coding-standards.md` and root `README.md` updated for the new workflow
-- [ ] `docs/01-create-game/progress.md` deferred item “Automated unit tests” checked off when done
+- [x] `npm test` runs Vitest in watch and CI modes — scripts in `package.json`; CI uses `npm run test:run` in `.github/workflows/test.yml`
+- [x] `npm run test:coverage` reports coverage with agreed thresholds — enforced in `vitest.config.ts` for `src/game/**` (≥ 95%) and `src/data/**` (≥ 90%)
+- [x] Game engine has exhaustive rule coverage (happy paths + invalid transitions + edge cases) — `src/game/engine.test.ts`, `src/game/board.test.ts` (166 tests total across suite)
+- [x] Data validators have table-driven tests for every documented rejection reason — `src/data/loadBoard.test.ts`, `src/data/savedGame.test.ts`, `src/data/saveBoard.test.ts`
+- [x] Core play and manage UI flows have component tests with React Testing Library — nine component test files including `PlayGameView` and `ManageGameView`
+- [x] `docs/agent/coding-standards.md` and root `README.md` updated for the new workflow — also `AGENTS.md`, `docs/agent/architecture.md`
+- [x] `docs/01-create-game/progress.md` deferred item “Automated unit tests” checked off when done
+
+## Remaining tests (deferred)
+
+The initiative is **done** for v1; the items below were intentionally skipped and can be picked up later if regressions appear or time allows.
+
+| Area | What was deferred | Why |
+|------|-------------------|-----|
+| **`src/App.tsx`** | Navigation smoke tests (Play ↔ Manage, `boardRevision` after save) | Low risk orchestration; `useMediaQuery` / mobile drawer awkward in jsdom |
+| **`src/theme.ts`** | Any tests | Declarative palette only |
+| **`src/main.tsx`** | Bootstrap tests | Entry point with no logic |
+| **`vite.config.ts`** | Dev-server middleware tests | Dev-only; extract handlers only if bugs recur |
+| **Component coverage ≥ 75%** | Enforced threshold on `src/components/**` | Threshold not configured; interactive components are covered, presentational gaps acceptable for v1 |
+| **Codecov / coverage upload** | CI artifact or third-party report | Optional for v1 per [CI integration](#ci-integration-recommended) |
+| **Non-goals** | E2E (Playwright/Cypress), visual regression, performance/load | See [Non-goals](#non-goals-v1-of-test-suite) |
+
+See also [§7 App shell](#7-app-shell--srcapptsx-optional-lower-priority) and [§8 Out of scope / defer](#8-out-of-scope--defer).
 
 ## Non-goals (v1 of test suite)
 
@@ -432,15 +448,15 @@ When the suite lands, update:
 |------|--------|
 | Root `README.md` | Add `npm test`, `npm run test:run`, `npm run test:coverage` |
 | `docs/agent/coding-standards.md` | Remove “deferred in v1” for test frameworks; add colocation and RTL conventions |
-| `docs/agent/architecture.md` | Change “formal tests deferred to v2” to point at `docs/unit-testing/plan.md` |
+| `docs/agent/architecture.md` | Point engine testing note at this plan (`docs/02-add-test-coverage/plan.md`) |
 | `docs/01-create-game/progress.md` | Check “Automated unit tests”; add milestone note |
 | `AGENTS.md` | Add `npm test` to Commands; remove tests from “do not add unless requested” |
 
 ---
 
-## CI integration (recommended)
+## CI integration
 
-Add a test step to any existing GitHub Actions workflow (or create `.github/workflows/test.yml`):
+Implemented in `.github/workflows/test.yml` on push/PR to `master`/`main`:
 
 ```yaml
 - run: npm ci
@@ -448,13 +464,13 @@ Add a test step to any existing GitHub Actions workflow (or create `.github/work
 - run: npm run build
 ```
 
-Run `test:run` before `build` so failing tests fail fast. Coverage upload (Codecov, etc.) is optional for v1.
+Run `test:run` before `build` so failing tests fail fast. Coverage upload (Codecov, etc.) remains optional — see [Remaining tests (deferred)](#remaining-tests-deferred).
 
 ---
 
 ## Commit strategy on `add-test-coverage`
 
-Suggested commit sequence (user may squash at merge):
+Merged in six commits (squash optional at merge):
 
 1. `chore: add vitest and testing-library tooling`
 2. `test: add shared fixtures, MSW handlers, and render helpers`
@@ -463,16 +479,16 @@ Suggested commit sequence (user may squash at merge):
 5. `test: cover play and manage UI components`
 6. `docs: document test workflow and mark automated tests complete`
 
-All work stays on `add-test-coverage` until the user opens a PR to merge.
-
 ---
 
 ## Definition of done
 
-The testing initiative is complete when:
+The testing initiative is **complete** on `master`. Remaining work is limited to [deferred tests](#remaining-tests-deferred).
+
+Verified:
 
 1. All checkboxes in [Success criteria](#success-criteria) are satisfied
-2. `npm run test:run` and `npm run build` pass locally
+2. `npm run test:run` and `npm run build` pass locally (166 tests as of 2026-06-19)
 3. Engine tests document every rule in the [Game domain](../agent/game-domain.md) scoring table (correct, incorrect, steal, all miss, completion, ties)
 4. A developer can add a new clue validation rule with a single new row in a table-driven test
 5. No game-rule logic is tested only through UI — UI tests assert wiring; engine tests assert rules
