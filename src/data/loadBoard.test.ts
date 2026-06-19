@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import {
   CLUE_VALUES_BY_ROW,
+  formatBoardValidationError,
   loadBoard,
   validateBoard,
 } from './loadBoard'
@@ -199,6 +200,27 @@ function boardDuplicateClueId(): string {
   return createStandardBoard().categories[0].clues[0].id
 }
 
+describe('formatBoardValidationError', () => {
+  it('describes empty clue answers with category and value', () => {
+    const board = createStandardBoard()
+
+    expect(
+      formatBoardValidationError(
+        'categories[0].clues[0].answer must be a non-empty string.',
+        board,
+      ),
+    ).toBe('Category 1 ($200): Answer cannot be empty.')
+  })
+
+  it('describes empty category titles', () => {
+    expect(
+      formatBoardValidationError(
+        'categories[0].title must be a non-empty string.',
+      ),
+    ).toBe('Category 1: Category name cannot be empty.')
+  })
+})
+
 describe('loadBoard', () => {
   it('returns a validated board when the API succeeds', async () => {
     const result = await loadBoard()
@@ -231,7 +253,7 @@ describe('loadBoard', () => {
 
     expect(result).toEqual({
       ok: false,
-      error: 'Could not load board data. Is the dev server running?',
+      error: 'Could not load the board. Is the dev server running?',
     })
   })
 

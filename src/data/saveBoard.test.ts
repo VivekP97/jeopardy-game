@@ -21,7 +21,7 @@ describe('saveBoard', () => {
 
     expect(result).toEqual({
       ok: false,
-      error: 'Board must contain exactly 6 categories.',
+      error: 'The board must have exactly 6 categories.',
     })
   })
 

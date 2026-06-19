@@ -46,7 +46,22 @@ describe('ManageGameView', () => {
     await user.click(screen.getByRole('button', { name: 'Save board' }))
 
     expect(
-      await screen.findByText('categories[0].title must be a non-empty string.'),
+      await screen.findByText('Category 1: Category name cannot be empty.'),
+    ).toBeInTheDocument()
+  })
+
+  it('shows a friendly message when an answer is empty', async () => {
+    const user = userEvent.setup()
+    renderWithTheme(<ManageGameView />)
+
+    await screen.findByRole('textbox', { name: 'Category 1' })
+
+    const answerFields = screen.getAllByRole('textbox', { name: 'Answer' })
+    fireEvent.change(answerFields[0], { target: { value: '' } })
+    await user.click(screen.getByRole('button', { name: 'Save board' }))
+
+    expect(
+      await screen.findByText('Category 1 ($200): Answer cannot be empty.'),
     ).toBeInTheDocument()
   })
 

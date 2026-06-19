@@ -156,6 +156,99 @@ export function validateBoard(data: unknown): Board {
   return sortedBoard
 }
 
+function formatClueLocation(
+  categoryIndex: number,
+  clueIndex: number,
+  board?: Board,
+): string {
+  const categoryNumber = categoryIndex + 1
+  const value = board?.categories[categoryIndex]?.clues[clueIndex]?.value
+
+  if (value !== undefined) {
+    return `Category ${categoryNumber} ($${value.toLocaleString()})`
+  }
+
+  return `Category ${categoryNumber}, row ${clueIndex + 1}`
+}
+
+export function formatBoardValidationError(
+  message: string,
+  board?: Board,
+): string {
+  const categoryClueField = message.match(
+    /^categories\[(\d+)\]\.clues\[(\d+)\]\.(\w+) must be a non-empty string\.$/,
+  )
+  if (categoryClueField) {
+    const categoryIndex = Number(categoryClueField[1])
+    const clueIndex = Number(categoryClueField[2])
+    const field = categoryClueField[3]
+    const location = formatClueLocation(categoryIndex, clueIndex, board)
+    const fieldLabel =
+      field === 'question' ? 'Question' : field === 'answer' ? 'Answer' : field
+
+    return `${location}: ${fieldLabel} cannot be empty.`
+  }
+
+  const categoryTitle = message.match(
+    /^categories\[(\d+)\]\.title must be a non-empty string\.$/,
+  )
+  if (categoryTitle) {
+    return `Category ${Number(categoryTitle[1]) + 1}: Category name cannot be empty.`
+  }
+
+  const categoryClueValue = message.match(
+    /^categories\[(\d+)\]\.clues\[(\d+)\]\.value must be a (positive integer|number)\.$/,
+  )
+  if (categoryClueValue) {
+    const categoryIndex = Number(categoryClueValue[1])
+    const clueIndex = Number(categoryClueValue[2])
+    const location = formatClueLocation(categoryIndex, clueIndex, board)
+
+    if (categoryClueValue[3] === 'positive integer') {
+      return `${location}: Value must be a positive whole number.`
+    }
+
+    return `${location}: Value must be a number.`
+  }
+
+  const categoryClueCount = message.match(
+    /^categories\[(\d+)\]\.clues must contain exactly (\d+) clues\.$/,
+  )
+  if (categoryClueCount) {
+    return `Category ${Number(categoryClueCount[1]) + 1} must have exactly ${categoryClueCount[2]} clues.`
+  }
+
+  const rowValueMismatch = message.match(/^Row (\d+) values must match across all categories\.$/)
+  if (rowValueMismatch) {
+    return `Row ${rowValueMismatch[1]} has mismatched values across categories. Each row must use the same value in every category.`
+  }
+
+  if (message.includes('Row values must strictly increase')) {
+    return 'Row values must increase from top to bottom, with a unique value on each row.'
+  }
+
+  const duplicateCategoryId = message.match(/^Duplicate category id "(.+)"\.$/)
+  if (duplicateCategoryId) {
+    return `Duplicate category id "${duplicateCategoryId[1]}". Each category needs a unique id.`
+  }
+
+  const duplicateClueId = message.match(/^Duplicate clue id "(.+)"\.$/)
+  if (duplicateClueId) {
+    return `Duplicate clue id "${duplicateClueId[1]}". Each clue needs a unique id.`
+  }
+
+  const knownMessages: Record<string, string> = {
+    'Board must be a JSON object.': 'The board file must be a JSON object.',
+    'Board must include a categories array.': 'The board must include a categories list.',
+    [`Board must contain exactly ${STANDARD_CATEGORY_COUNT} categories.`]: `The board must have exactly ${STANDARD_CATEGORY_COUNT} categories.`,
+    'Could not load board data. Is the dev server running?':
+      'Could not load the board. Is the dev server running?',
+    'Failed to load board.': 'Could not load the board.',
+  }
+
+  return knownMessages[message] ?? message
+}
+
 async function fetchBoardJson(): Promise<unknown> {
   const apiResponse = await fetch('/api/board')
   if (apiResponse.ok) {
@@ -178,6 +271,6 @@ export async function loadBoard(): Promise<LoadBoardResult> {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'Failed to load board.'
-    return { ok: false, error: message }
+    return { ok: false, error: formatBoardValidationError(message) }
   }
 }

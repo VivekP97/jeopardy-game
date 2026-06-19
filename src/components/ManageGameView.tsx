@@ -14,7 +14,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { loadBoard, validateBoard } from '../data/loadBoard'
+import { formatBoardValidationError, loadBoard, validateBoard } from '../data/loadBoard'
 import { saveBoard } from '../data/saveBoard'
 import {
   getRowValues,
@@ -266,7 +266,7 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Board validation failed.'
-      setValidationError(message)
+      setValidationError(formatBoardValidationError(message, draft))
       return
     }
 
@@ -338,12 +338,6 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
           automatically to keep values increasing top to bottom.
         </Typography>
       </Box>
-
-      {validationError ? (
-        <Alert severity="error" onClose={() => setValidationError('')}>
-          {validationError}
-        </Alert>
-      ) : null}
 
       <TableContainer
         component={Paper}
@@ -464,7 +458,15 @@ export default function ManageGameView({ onBoardSaved }: ManageGameViewProps) {
         >
           Reset
         </Button>
-        {saveMessage ? (
+        {validationError ? (
+          <Alert
+            severity="error"
+            onClose={() => setValidationError('')}
+            sx={{ py: 0.5, flex: { xs: '1 1 100%', sm: '0 1 auto' } }}
+          >
+            {validationError}
+          </Alert>
+        ) : saveMessage ? (
           <Alert
             severity="success"
             onClose={() => setSaveMessage('')}

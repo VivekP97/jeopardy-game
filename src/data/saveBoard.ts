@@ -1,5 +1,5 @@
 import type { Board } from '../types/game'
-import { validateBoard } from './loadBoard'
+import { formatBoardValidationError, validateBoard } from './loadBoard'
 
 export type SaveBoardResult =
   | { ok: true; board: Board }
@@ -31,6 +31,6 @@ export async function saveBoard(board: Board): Promise<SaveBoardResult> {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'Failed to save board.'
-    return { ok: false, error: message }
+    return { ok: false, error: formatBoardValidationError(message, board) }
   }
 }
